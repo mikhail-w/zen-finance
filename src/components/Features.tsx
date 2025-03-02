@@ -14,8 +14,8 @@ export default function Features() {
 
       <div className="features">
         <Image
-          src="/img/digital-lazy.jpg"
-          data-src="/img/digital.jpg"
+          src="/img/digital.svg"
+          data-src="/img/digital.svg"
           alt="Computer"
           className="features__img lazy-img"
           width={500}
@@ -49,8 +49,8 @@ export default function Features() {
           </p>
         </div>
         <Image
-          src="/img/grow-lazy.jpg"
-          data-src="/img/grow.jpg"
+          src="/img/grow.svg"
+          data-src="/img/grow.svg"
           alt="Plant"
           className="features__img lazy-img"
           width={500}
@@ -58,8 +58,8 @@ export default function Features() {
         />
 
         <Image
-          src="/img/card-lazy.jpg"
-          data-src="/img/card.jpg"
+          src="/img/card.svg"
+          data-src="/img/card.svg"
           alt="Credit card"
           className="features__img lazy-img"
           width={500}
