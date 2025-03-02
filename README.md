@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Zen Finance
+
+A modern finance tracking application built with Next.js and Tailwind CSS.
 
 ## Getting Started
 
-First, run the development server:
+These instructions will get your copy of the project up and running on your
+local machine for development purposes.
+
+### Prerequisites
+
+- Node.js (v18.18.0 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/zen-finance.git
+cd zen-finance
+```
+
+2. Install dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Start the development server
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open your browser and navigate to `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+zen-finance/
+├── public/
+│   └── img/           # Static images
+├── src/
+│   ├── app/
+│   │   ├── globals.css # Global styles
+│   │   ├── layout.tsx  # Root layout component
+│   │   └── page.tsx    # Home page component
+│   ├── components/
+│   │   ├── Header.tsx  # Header component
+│   │   └── Navigation.tsx # Navigation component
+│   └── styles/
+│       └── animations.css # Animation styles
+├── tailwind.config.js  # Tailwind CSS configuration
+├── postcss.config.js   # PostCSS configuration
+└── package.json        # Project dependencies and scripts
+```
 
-## Learn More
+## Built With
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js](https://nextjs.org/) - The React framework
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+- [TypeScript](https://www.typescriptlang.org/) - JavaScript with syntax for
+  types
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes on Tailwind CSS Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project uses Tailwind CSS v4.0 with Next.js. The setup includes:
 
-## Deploy on Vercel
+1. Custom font size configuration to match the original rem-based design
+2. CSS variables for colors and gradients to maintain consistency
+3. Custom component classes via @layer components
+4. Animation styles in a separate file for better organization
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For more information on customizing Tailwind CSS, see the
+[Tailwind CSS documentation](https://tailwindcss.com/docs/configuration).

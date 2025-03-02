@@ -1,121 +1,106 @@
 'use client';
-
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Navigation() {
-  const [isSticky, setIsSticky] = useState(false);
-  const navRef = useRef<HTMLElement | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const nav = document.querySelector('.nav');
-    if (nav) navRef.current = nav as HTMLElement;
-
-    // Simple scroll event listener for sticky navigation
     const handleScroll = () => {
-      if (window.scrollY > 0) {
-        // Make sticky immediately when scrolling starts
-        setIsSticky(true);
+      if (window.scrollY > 100) {
+        setIsScrolled(true);
       } else {
-        setIsSticky(false);
+        setIsScrolled(false);
       }
     };
 
-    // Add scroll event listener
-    window.addEventListener('scroll', handleScroll);
-
-    // Check position on initial load
+    // Initial call to set correct state
     handleScroll();
 
+    window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  // Handle navigation hover effect
-  const handleHover = (
-    e: React.MouseEvent<HTMLUListElement>,
-    opacity: number,
-    enter = false
-  ) => {
-    const target = e.target as HTMLElement;
-
-    if (target.classList.contains('nav__link')) {
-      const link = target;
-      const siblings = link.closest('.nav')?.querySelectorAll('.nav__link');
-      const logo = link.closest('.nav')?.querySelector('img');
-
-      if (!link.classList.contains('nav__link--btn')) {
-        if (enter) {
-          link.classList.add('under_light');
-        } else {
-          link.classList.remove('under_light');
-        }
-      }
-
-      siblings?.forEach(el => {
-        if (el !== link) {
-          (el as HTMLElement).style.opacity = opacity.toString();
-        }
-      });
-
-      if (logo) {
-        (logo as HTMLElement).style.opacity = opacity.toString();
-      }
-    }
-  };
-
-  // Handle smooth scrolling
-  const handleNavClick = (e: React.MouseEvent<HTMLUListElement>) => {
-    e.preventDefault();
-
-    const target = e.target as HTMLElement;
-
-    if (target.classList.contains('nav__link')) {
-      const id = target.getAttribute('href');
-      if (id && id !== '#') {
-        const section = document.querySelector(id);
-        section?.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
-
   return (
-    <nav className={`nav ${isSticky ? 'sticky' : ''}`} ref={navRef}>
+    <nav
+      className={`
+        fixed top-0 left-0 flex justify-between items-center h-[90px] w-full px-24 z-50
+        transition-all duration-300 ease-in-out
+        ${isScrolled ? 'bg-[#f3f3f3] shadow-md' : 'bg-[#f3f3f3]'}
+      `}
+    >
       <Image
         src="/img/logo.png"
         alt="Zen Finance logo"
-        className="nav__logo"
-        id="logo"
-        width={200}
-        height={63}
-        data-version-number="3.0"
+        width={180}
+        height={45}
+        className="h-[4.5rem] w-auto transition-all duration-300"
       />
-      <ul
-        className="nav__links"
-        onClick={handleNavClick}
-        onMouseOver={e => handleHover(e, 0.5, true)}
-        onMouseOut={e => handleHover(e, 1)}
-      >
-        <li className="nav__item">
-          <a className="nav__link" href="#section--1">
+      <ul className="flex items-center list-none">
+        <li className="ml-16">
+          <Link
+            href="#section--1"
+            className="
+              text-[1.7rem] font-normal text-inherit no-underline block
+              transition-all duration-300 relative
+              hover:text-primary
+              after:content-[''] after:absolute after:bottom-0 after:left-0
+              after:h-[2px] after:w-0 after:bg-primary
+              after:transition-all after:duration-300
+              hover:after:w-full
+            "
+          >
             Features
-          </a>
+          </Link>
         </li>
-        <li className="nav__item">
-          <a className="nav__link" href="#section--2">
+        <li className="ml-16">
+          <Link
+            href="#section--2"
+            className="
+              text-[1.7rem] font-normal text-inherit no-underline block
+              transition-all duration-300 relative
+              hover:text-primary
+              after:content-[''] after:absolute after:bottom-0 after:left-0
+              after:h-[2px] after:w-0 after:bg-primary
+              after:transition-all after:duration-300
+              hover:after:w-full
+            "
+          >
             Operations
-          </a>
+          </Link>
         </li>
-        <li className="nav__item">
-          <a className="nav__link" href="#section--3">
+        <li className="ml-16">
+          <Link
+            href="#section--3"
+            className="
+              text-[1.7rem] font-normal text-inherit no-underline block
+              transition-all duration-300 relative
+              hover:text-primary
+              after:content-[''] after:absolute after:bottom-0 after:left-0
+              after:h-[2px] after:w-0 after:bg-primary
+              after:transition-all after:duration-300
+              hover:after:w-full
+            "
+          >
             Testimonials
-          </a>
+          </Link>
         </li>
-        <li className="nav__item">
-          <a className="nav__link nav__link--btn btn--show-modal" href="#">
+        <li className="ml-16">
+          <Link
+            href="#"
+            className="
+              text-[1.7rem] font-normal py-2 px-10 rounded-3xl
+              bg-primary text-[#222]
+              transition-all duration-300
+              hover:bg-primary-darker hover:shadow-md
+              transform hover:-translate-y-[2px]
+            "
+          >
             Open account
-          </a>
+          </Link>
         </li>
       </ul>
     </nav>
