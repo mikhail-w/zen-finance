@@ -2,10 +2,10 @@
 
 import { useEffect } from 'react';
 import Navigation from '@/components/Navigation';
-import Header from '@/components/Header';
-import Features from '@/components/Features';
-import Operations from '@/components/Operations';
-import Testimonials from '@/components/Testimonials';
+import Header from '@/components/Header/Header';
+import Features from '@/components/Features/Features';
+import Operations from '@/components/Operations/Operations';
+import Testimonials from '@/components/Testimonials/Testimonials';
 import SignUp from '@/components/SignUp';
 import Footer from '@/components/Footer';
 import Modal from '@/components/Modal';
