@@ -20,6 +20,12 @@ module.exports = {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-secondary': 'var(--gradient-secondary)',
       },
+      animation: {
+        'spin-twice': 'spin 1s linear 1',
+      },
+      transitionDuration: {
+        1000: '1000ms',
+      },
     },
   },
   plugins: [],

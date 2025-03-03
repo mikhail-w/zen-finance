@@ -528,5 +528,15 @@
   filter: blur(20px);
 }
 
+@keyframes spin-twice {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(720deg);
+  }
+}
+
 /* Import animations */
 @import '../styles/animations.css';
