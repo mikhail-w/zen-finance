@@ -1,9 +1,20 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { Poppins } from 'next/font/google';
+
+// Configure the font
+const poppins = Poppins({
+  weight: ['300', '400', '500', '600'],
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Zen Finance | Less Stress, More Clarity',
   description: 'Minimalism meets modern finance for a seamless experience.',
+  icons: {
+    icon: '/favicon.ico?v=2',
+  },
 };
 
 export default function RootLayout({
@@ -12,14 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600&display=swap"
-          rel="stylesheet"
-        />
-        <link rel="shortcut icon" href="/img/icon.png" type="image/png" />
-      </head>
+    <html lang="en" className={poppins.className}>
       <body>{children}</body>
     </html>
   );

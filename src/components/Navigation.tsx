@@ -136,7 +136,7 @@ export default function Navigation() {
     ml-8 lg:ml-16
     text-base md:text-[1.7rem] font-normal text-gray-800 no-underline
     transition-transform duration-300 relative
-    after:content-[''] after:absolute after:bottom-[-4px] after:left-0
+    after:content-[''] after:absolute after:bottom-[-10px] after:left-0
     after:h-[2px] after:w-0 after:bg-[#5ec576]
     after:transition-all after:duration-300
     hover:after:w-full
