@@ -79,12 +79,12 @@ export default function Home() {
     <main>
       <Navigation />
       <Header />
-      <Features />
+      {/* <Features />
       <Operations />
       <Testimonials />
       <SignUp />
       <Footer />
-      <Modal />
+      <Modal /> */}
     </main>
   );
 }

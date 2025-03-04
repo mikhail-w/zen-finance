@@ -93,9 +93,7 @@ export default function Operations() {
           } text-[1.7rem] p-[2.5rem_7rem_6.5rem_7rem]`}
         >
           <div className="flex items-center justify-center h-[7rem] w-[7rem] rounded-full bg-[var(--color-secondary-opacity)]">
-            <svg className="h-[2.75rem] w-[2.75rem] fill-[var(--color-secondary-darker)]">
-              <use xlinkHref="/img/icons.svg#icon-upload"></use>
-            </svg>
+            <svg className="h-[2.75rem] w-[2.75rem] fill-[var(--color-secondary-darker)]"></svg>
           </div>
           <h5 className="text-[2.25rem] font-medium self-center">
             Transfer money to anyone, instantly! No fees, no BS.
@@ -116,9 +114,7 @@ export default function Operations() {
           } text-[1.7rem] p-[2.5rem_7rem_6.5rem_7rem]`}
         >
           <div className="flex items-center justify-center h-[7rem] w-[7rem] rounded-full bg-[var(--color-primary-opacity)]">
-            <svg className="h-[2.75rem] w-[2.75rem] fill-primary">
-              <use xlinkHref="/img/icons.svg#icon-home"></use>
-            </svg>
+            <svg className="h-[2.75rem] w-[2.75rem] fill-primary"></svg>
           </div>
           <h5 className="text-[2.25rem] font-medium self-center">
             Buy a home or make your dreams come true, with instant loans.
@@ -139,9 +135,7 @@ export default function Operations() {
           } text-[1.7rem] p-[2.5rem_7rem_6.5rem_7rem]`}
         >
           <div className="flex items-center justify-center h-[7rem] w-[7rem] rounded-full bg-[var(--color-tertiary-opacity)]">
-            <svg className="h-[2.75rem] w-[2.75rem] fill-[var(--color-tertiary)]">
-              <use xlinkHref="/img/icons.svg#icon-user-x"></use>
-            </svg>
+            <svg className="h-[2.75rem] w-[2.75rem] fill-[var(--color-tertiary)]"></svg>
           </div>
           <h5 className="text-[2.25rem] font-medium self-center">
             No longer need your account? No problem! Close it instantly.

@@ -98,7 +98,7 @@ export default function Features() {
             <Image
               src="/img/digital.svg"
               alt="Digital banking interface"
-              className="w-full h-auto"
+              // className="w-full h-auto"
               width={450}
               height={270}
               priority
@@ -114,9 +114,7 @@ export default function Features() {
             }`}
           >
             <div className="flex items-center justify-center bg-[var(--color-primary-opacity)] h-20 w-20 rounded-full mb-5">
-              <svg className="h-10 w-10 fill-primary">
-                <use xlinkHref="/img/icons.svg#icon-monitor"></use>
-              </svg>
+              <svg className="h-10 w-10 fill-primary"></svg>
             </div>
             <h5 className="text-3xl font-semibold mb-5">
               100% digital banking
@@ -141,9 +139,7 @@ export default function Features() {
             }`}
           >
             <div className="flex items-center justify-center bg-[var(--color-primary-opacity)] h-20 w-20 rounded-full mb-5">
-              <svg className="h-10 w-10 fill-primary">
-                <use xlinkHref="/img/icons.svg#icon-trending-up"></use>
-              </svg>
+              <svg className="h-10 w-10 fill-primary"></svg>
             </div>
             <h5 className="text-3xl font-semibold mb-5">
               Intelligent wealth growth
@@ -205,9 +201,7 @@ export default function Features() {
             }`}
           >
             <div className="flex items-center justify-center bg-[var(--color-primary-opacity)] h-20 w-20 rounded-full mb-5">
-              <svg className="h-10 w-10 fill-primary">
-                <use xlinkHref="/img/icons.svg#icon-credit-card"></use>
-              </svg>
+              <svg className="h-10 w-10 fill-primary"></svg>
             </div>
             <h5 className="text-3xl font-semibold mb-5">
               Premium debit card included
