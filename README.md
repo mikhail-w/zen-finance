@@ -37,29 +37,6 @@ npm run dev
 yarn dev
 ```
 
-4. Open your browser and navigate to `http://localhost:3000`
-
-## Project Structure
-
-```
-zen-finance/
-├── public/
-│   └── img/           # Static images
-├── src/
-│   ├── app/
-│   │   ├── globals.css # Global styles
-│   │   ├── layout.tsx  # Root layout component
-│   │   └── page.tsx    # Home page component
-│   ├── components/
-│   │   ├── Header.tsx  # Header component
-│   │   └── Navigation.tsx # Navigation component
-│   └── styles/
-│       └── animations.css # Animation styles
-├── tailwind.config.js  # Tailwind CSS configuration
-├── postcss.config.js   # PostCSS configuration
-└── package.json        # Project dependencies and scripts
-```
-
 ## Built With
 
 - [Next.js](https://nextjs.org/) - The React framework

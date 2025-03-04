@@ -39,9 +39,10 @@
   }
 
   h1 {
-    font-size: 8rem;
+    font-size: 1rem;
     line-height: 1.2;
     margin-bottom: 2rem;
+    color: inherit;
   }
 
   h4 {
@@ -54,6 +55,7 @@
   p {
     color: #666;
   }
+
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
@@ -81,6 +83,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -148,7 +151,6 @@
   }
 }
 
-/* Apply animations via Tailwind */
 @layer utilities {
   .animate-fadeIn {
     animation: fadeIn 0.5s forwards;
@@ -165,17 +167,5 @@
   .section-hidden {
     opacity: 0;
     transform: translateY(8rem);
-  }
-}
-
-/* Import animations */
-@import '../styles/animations.css';
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
   }
 }

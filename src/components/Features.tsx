@@ -28,7 +28,6 @@ export default function Features() {
       sectionObserver.observe(sectionRef.current);
     }
 
-    // Observer for feature animations
     const featureObserver = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {

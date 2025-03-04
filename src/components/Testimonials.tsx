@@ -168,7 +168,10 @@ export default function Testimonials() {
         >
           <div className="w-[90%] md:w-[65%] relative">
             {/* Quote symbol */}
-            <div className="absolute top-[-3rem] md:top-[-5.7rem] left-[-2rem] md:left-[-6.8rem] text-[10rem] md:text-[20rem] leading-[1] font-inherit text-primary z-[-1]">
+            <div
+              className="absolute top-[-3rem] md:top-[-5.7rem] left-[-2rem] md:left-[-6.8rem] text-[10rem] md:text-[20rem] leading-[1] font-inherit text-primary z-[-1]"
+              style={{ color: '#5ec576' }}
+            >
               &#8220;
             </div>
 
@@ -210,7 +213,10 @@ export default function Testimonials() {
         >
           <div className="w-[90%] md:w-[65%] relative">
             {/* Quote symbol */}
-            <div className="absolute top-[-3rem] md:top-[-5.7rem] left-[-2rem] md:left-[-6.8rem] text-[10rem] md:text-[20rem] leading-[1] font-inherit text-primary z-[-1]">
+            <div
+              className="absolute top-[-3rem] md:top-[-5.7rem] left-[-2rem] md:left-[-6.8rem] text-[10rem] md:text-[20rem] leading-[1] font-inherit text-primary z-[-1]"
+              style={{ color: '#5ec576' }}
+            >
               &#8220;
             </div>
 
@@ -251,7 +257,10 @@ export default function Testimonials() {
         >
           <div className="w-[90%] md:w-[65%] relative">
             {/* Quote symbol */}
-            <div className="absolute top-[-3rem] md:top-[-5.7rem] left-[-2rem] md:left-[-6.8rem] text-[10rem] md:text-[20rem] leading-[1] font-inherit text-primary z-[-1]">
+            <div
+              className="absolute top-[-3rem] md:top-[-5.7rem] left-[-2rem] md:left-[-6.8rem] text-[10rem] md:text-[20rem] leading-[1] font-inherit text-primary z-[-1]"
+              style={{ color: '#5ec576' }}
+            >
               &#8220;
             </div>
 

@@ -310,7 +310,6 @@ export default function Navigation() {
         </div>
       )}
 
-      {/* Add keyframe animations */}
       <style jsx>{`
         @keyframes spin {
           0% {

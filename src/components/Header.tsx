@@ -60,7 +60,7 @@ export default function Header() {
         <div className="w-full max-w-full order-first md:order-last md:max-w-5xl mx-auto -mt-8 sm:-mt-16 md:-mt-[124px] md:col-start-2 md:col-end-3 block">
           <Image
             src="/img/hero.svg"
-            alt="Minimalist items"
+            alt="Hero Image"
             width={800}
             height={600}
             priority
