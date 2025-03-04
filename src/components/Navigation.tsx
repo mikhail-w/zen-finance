@@ -131,7 +131,14 @@ export default function Navigation() {
           >
             <span className="relative inline-block">
               Zen
-              <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#5ec576]"></span>
+              <span
+                className="absolute bottom-[0px] left-0 w-full"
+                style={{
+                  height: '2px',
+                  backgroundColor: '#5ec576',
+                  animation: 'breath 4s ease-in-out infinite',
+                }}
+              ></span>
             </span>{' '}
             Finance
           </div>
