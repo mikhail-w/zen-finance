@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 export default function Features() {
-  const sectionRef = useRef(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [activeFeatures, setActiveFeatures] = useState([]);
+  const [activeFeatures, setActiveFeatures] = useState<string[]>([]);
 
   useEffect(() => {
     // Observer for section entrance animation
@@ -98,7 +98,6 @@ export default function Features() {
             <Image
               src="/img/digital.svg"
               alt="Digital banking interface"
-              // className="w-full h-auto"
               width={450}
               height={270}
               priority
