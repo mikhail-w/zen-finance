@@ -1,12 +1,23 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 
 export default function Testimonials() {
   // Track window size for responsive adjustments
   const [isMobile, setIsMobile] = useState(false);
+  // State for current slide
+  const [curSlide, setCurSlide] = useState(0);
+  const [touchStartX, setTouchStartX] = useState(0);
 
+  // References for DOM elements
+  const slidesRef = useRef<HTMLDivElement[]>([]);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Get total number of slides
+  const maxSlide = 3 - 1; // Hardcoded based on the 3 slides in the component
+
+  // Resize handler for responsive design
   useEffect(() => {
     // Check if we're on client side before accessing window
     if (typeof window !== 'undefined') {
@@ -25,168 +36,117 @@ export default function Testimonials() {
     }
   }, []);
 
+  // Function to update slide positions
+  const goToSlide = useCallback((slide: number) => {
+    slidesRef.current.forEach((s, i) => {
+      if (s) {
+        s.style.transform = `translateX(${100 * (i - slide)}%)`;
+      }
+    });
+  }, []);
+
+  // Navigation handlers
+  const nextSlide = useCallback(() => {
+    setCurSlide(prev => (prev === maxSlide ? 0 : prev + 1));
+  }, [maxSlide]);
+
+  const prevSlide = useCallback(() => {
+    setCurSlide(prev => (prev === 0 ? maxSlide : prev - 1));
+  }, [maxSlide]);
+
+  // Touch event handlers
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // Reset auto-advance interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchThreshold = 50; // Minimum px distance to detect swipe
+
+    if (touchStartX - touchEndX > touchThreshold) {
+      // Swipe left, go to next slide
+      nextSlide();
+    } else if (touchEndX - touchStartX > touchThreshold) {
+      // Swipe right, go to previous slide
+      prevSlide();
+    }
+  };
+
+  // Keyboard navigation handler
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      // Reset auto-advance interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+
+      if (e.key === 'ArrowLeft') prevSlide();
+      if (e.key === 'ArrowRight') nextSlide();
+    },
+    [prevSlide, nextSlide]
+  );
+
+  // Handle dot click
+  const handleDotClick = (slideIndex: number) => {
+    // Reset auto-advance interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setCurSlide(slideIndex);
+  };
+
+  // Reset auto-advance on navigation button clicks
+  const handleNavClick = (callback: () => void) => {
+    // Reset auto-advance interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    callback();
+  };
+
+  // Initial setup and auto-advance
   useEffect(() => {
-    const slider = function () {
-      const slides = document.querySelectorAll('.slide');
-      const btnLeft = document.querySelector('.slider__btn--left');
-      const btnRight = document.querySelector('.slider__btn--right');
-      const dotContainer = document.querySelector('.dots');
+    // Initialize slide positions
+    goToSlide(curSlide);
 
-      let curSlide = 0;
-      const maxSlide = slides.length - 1;
+    // Add keyboard event listener
+    document.addEventListener('keydown', handleKeyDown);
 
-      // Functions
-      const createDots = function () {
-        if (dotContainer) {
-          // Clear existing dots to prevent duplicates on re-render
-          dotContainer.innerHTML = '';
-
-          slides.forEach(function (_, i) {
-            dotContainer.insertAdjacentHTML(
-              'beforeend',
-              `<button class="dot" data-slide="${i}" aria-label="Go to slide ${
-                i + 1
-              }"></button>`
-            );
-          });
-        }
-      };
-
-      const activateDot = function (slide: number) {
-        document
-          .querySelectorAll('.dot')
-          .forEach(dot => dot.classList.remove('active-dot'));
-
-        document
-          .querySelector(`.dot[data-slide="${slide}"]`)
-          ?.classList.add('active-dot');
-      };
-
-      const goToSlide = function (slide: number) {
-        slides.forEach((s, i) => {
-          (s as HTMLElement).style.transform = `translateX(${
-            100 * (i - slide)
-          }%)`;
-        });
-      };
-
-      // Next slide
-      const nextSlide = function () {
-        curSlide = curSlide === maxSlide ? 0 : curSlide + 1;
-        activateDot(curSlide);
-        goToSlide(curSlide);
-      };
-
-      // Previous slide
-      const prevSlide = function () {
-        curSlide = curSlide === 0 ? maxSlide : curSlide - 1;
-        activateDot(curSlide);
-        goToSlide(curSlide);
-      };
-
-      const init = function () {
-        createDots();
-        activateDot(0);
-        goToSlide(0);
-      };
-      init();
-
-      // Event handlers
-      btnRight?.addEventListener('click', nextSlide);
-      btnLeft?.addEventListener('click', prevSlide);
-
-      // Touch events for mobile swiping
-      let touchStartX = 0;
-      let touchEndX = 0;
-
-      const handleSwipe = () => {
-        const touchThreshold = 50; // Minimum px distance to detect swipe
-        if (touchStartX - touchEndX > touchThreshold) {
-          // Swipe left, go to next slide
-          nextSlide();
-        } else if (touchEndX - touchStartX > touchThreshold) {
-          // Swipe right, go to previous slide
-          prevSlide();
-        }
-      };
-
-      slides.forEach(slide => {
-        slide.addEventListener(
-          'touchstart',
-          (e: TouchEvent) => {
-            touchStartX = e.changedTouches[0].screenX;
-          },
-          { passive: true }
-        );
-
-        slide.addEventListener(
-          'touchend',
-          (e: TouchEvent) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-          },
-          { passive: true }
-        );
-      });
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowLeft') prevSlide();
-        if (e.key === 'ArrowRight') nextSlide();
-      });
-
-      dotContainer?.addEventListener('click', function (e) {
-        const target = e.target as HTMLElement;
-        if (target.classList.contains('dot')) {
-          const { slide } = target.dataset;
-          if (slide) {
-            activateDot(parseInt(slide));
-            goToSlide(parseInt(slide));
-          }
-        }
-      });
-
-      // Auto-advance slides every 7 seconds
-      const slideInterval = setInterval(nextSlide, 7000);
-
-      // Clear interval when user interacts with slider
-      const clearSlideInterval = () => {
-        clearInterval(slideInterval);
-      };
-
-      btnRight?.addEventListener('click', clearSlideInterval);
-      btnLeft?.addEventListener('click', clearSlideInterval);
-      dotContainer?.addEventListener('click', clearSlideInterval);
-      slides.forEach(slide => {
-        slide.addEventListener(
-          'touchstart',
-          (e: TouchEvent) => {
-            clearSlideInterval();
-          },
-          { passive: true }
-        );
-      });
-
-      return () => {
-        // Clear interval on cleanup
-        clearInterval(slideInterval);
-      };
-    };
-
-    // Initialize slider
-    const sliderInstance = slider();
+    // Auto-advance slides every 7 seconds
+    intervalRef.current = setInterval(nextSlide, 7000);
 
     // Cleanup
     return () => {
-      document.removeEventListener('keydown', () => {});
-      if (sliderInstance) {
-        sliderInstance();
+      document.removeEventListener('keydown', handleKeyDown);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     };
-  }, []);
+  }, [goToSlide, curSlide, handleKeyDown, nextSlide]);
+
+  // Update slide positions when current slide changes
+  useEffect(() => {
+    goToSlide(curSlide);
+  }, [curSlide, goToSlide]);
+
+  // Function to add slide to refs
+  const addSlideRef = (el: HTMLDivElement | null, index: number) => {
+    if (el) {
+      slidesRef.current[index] = el;
+    }
+  };
 
   return (
     <section
-      className="py-16 md:py-60 px-10 md:px-12 border-t border-gray-300 transition-all duration-1000 "
+      className="py-16 md:py-60 px-10 md:px-12 border-t border-gray-300 transition-all duration-1000"
       id="section--3"
     >
       <div className="max-w-[80rem] mx-auto mb-12 md:mb-32">
@@ -200,7 +160,12 @@ export default function Testimonials() {
 
       <div className="max-w-[100rem] h-[65rem] md:h-[50rem] mx-auto relative overflow-hidden">
         {/* Slide 1 */}
-        <div className="slide absolute top-0 w-full h-full flex items-center justify-center transition-transform duration-1000">
+        <div
+          ref={el => addSlideRef(el, 0)}
+          className="slide absolute top-0 w-full h-full flex items-center justify-center transition-transform duration-1000"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className="w-[90%] md:w-[65%] relative">
             {/* Quote symbol */}
             <div className="absolute top-[-3rem] md:top-[-5.7rem] left-[-2rem] md:left-[-6.8rem] text-[10rem] md:text-[20rem] leading-[1] font-inherit text-primary z-[-1]">
@@ -237,7 +202,12 @@ export default function Testimonials() {
         </div>
 
         {/* Slide 2 */}
-        <div className="slide absolute top-0 w-full h-full flex items-center justify-center transition-transform duration-1000">
+        <div
+          ref={el => addSlideRef(el, 1)}
+          className="slide absolute top-0 w-full h-full flex items-center justify-center transition-transform duration-1000"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className="w-[90%] md:w-[65%] relative">
             {/* Quote symbol */}
             <div className="absolute top-[-3rem] md:top-[-5.7rem] left-[-2rem] md:left-[-6.8rem] text-[10rem] md:text-[20rem] leading-[1] font-inherit text-primary z-[-1]">
@@ -273,7 +243,12 @@ export default function Testimonials() {
         </div>
 
         {/* Slide 3 */}
-        <div className="slide absolute top-0 w-full h-full flex items-center justify-center transition-transform duration-1000">
+        <div
+          ref={el => addSlideRef(el, 2)}
+          className="slide absolute top-0 w-full h-full flex items-center justify-center transition-transform duration-1000"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className="w-[90%] md:w-[65%] relative">
             {/* Quote symbol */}
             <div className="absolute top-[-3rem] md:top-[-5.7rem] left-[-2rem] md:left-[-6.8rem] text-[10rem] md:text-[20rem] leading-[1] font-inherit text-primary z-[-1]">
@@ -312,12 +287,14 @@ export default function Testimonials() {
         {/* Navigation Buttons */}
         <button
           className="slider__btn--left absolute top-1/2 left-[5%] md:left-[6%] z-10 border-none bg-white/70 text-gray-800 rounded-full h-[3rem] w-[3rem] md:h-[5.5rem] md:w-[5.5rem] text-[2rem] md:text-[3.25rem] cursor-pointer flex items-center justify-center -translate-y-1/2 shadow-md"
+          onClick={() => handleNavClick(prevSlide)}
           aria-label="Previous testimonial"
         >
           &larr;
         </button>
         <button
           className="slider__btn--right absolute top-1/2 right-[5%] md:right-[6%] z-10 border-none bg-white/70 text-gray-800 rounded-full h-[3rem] w-[3rem] md:h-[5.5rem] md:w-[5.5rem] text-[2rem] md:text-[3.25rem] cursor-pointer flex items-center justify-center -translate-y-1/2 shadow-md"
+          onClick={() => handleNavClick(nextSlide)}
           aria-label="Next testimonial"
         >
           &rarr;
@@ -325,7 +302,15 @@ export default function Testimonials() {
 
         {/* Dots */}
         <div className="dots absolute bottom-[2%] left-1/2 -translate-x-1/2 flex">
-          {/* Dots will be created dynamically */}
+          {[...Array(3)].map((_, i) => (
+            <button
+              key={i}
+              className={`dot ${curSlide === i ? 'active-dot' : ''}`}
+              onClick={() => handleDotClick(i)}
+              aria-label={`Go to slide ${i + 1}`}
+              data-slide={i}
+            />
+          ))}
         </div>
       </div>
 
