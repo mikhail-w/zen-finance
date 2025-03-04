@@ -157,9 +157,13 @@ export default function Testimonials() {
       btnLeft?.addEventListener('click', clearSlideInterval);
       dotContainer?.addEventListener('click', clearSlideInterval);
       slides.forEach(slide => {
-        slide.addEventListener('touchstart', clearSlideInterval, {
-          passive: true,
-        });
+        slide.addEventListener(
+          'touchstart',
+          (e: TouchEvent) => {
+            clearSlideInterval();
+          },
+          { passive: true }
+        );
       });
 
       return () => {
