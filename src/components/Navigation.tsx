@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,6 +13,7 @@ export default function Navigation() {
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const [hoveredLink, setHoveredLink] = useState(null);
   const navRef = useRef(null);
+  const router = useRouter();
 
   // Menu items data
   const menuItems = [
@@ -217,7 +219,7 @@ export default function Navigation() {
             `}
             onMouseEnter={() => handleLinkHover('account')}
             onMouseLeave={() => handleLinkHover(null)}
-            onClick={() => (window.location.href = '#')}
+            onClick={() => router.push('/dashboard')}
           >
             Open account
           </Button>
@@ -275,10 +277,7 @@ export default function Navigation() {
                 variant="primary"
                 size="lg"
                 className="w-full text-xl"
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  window.location.href = '#';
-                }}
+                onClick={() => router.push('/dashboard')}
               >
                 Open account
               </Button>
