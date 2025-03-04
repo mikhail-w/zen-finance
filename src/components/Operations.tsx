@@ -70,7 +70,7 @@ export default function Operations() {
             Instant Transfers
           </button>
           <button
-            className={`inline-block bg-primary text-md md:text-[1.6rem] font-medium border-none py-3 md:py-[1.25rem] px-4 md:px-[4.5rem] rounded-full cursor-pointer transition-all duration-300 md:mr-[2.5rem] transform 
+            className={`inline-block bg-[#5ec576] text-md md:text-[1.6rem] font-medium border-none py-3 md:py-[1.25rem] px-4 md:px-[4.5rem] rounded-full cursor-pointer transition-all duration-300 md:mr-[2.5rem] transform 
             ${
               activeTab === 2
                 ? 'md:-translate-y-[66%] shadow-md'

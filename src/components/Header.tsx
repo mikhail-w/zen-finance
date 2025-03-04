@@ -55,7 +55,7 @@ export default function Header() {
 
   return (
     <header className="px-4 sm:px-8 md:px-12 pt-12 sm:pt-[100px] min-h-screen flex flex-col items-center justify-center overflow-y-auto">
-      <div className="flex-1 w-full max-w-[150rem] grid grid-cols-1 md:grid-cols-[50%_50%] gap-8 md:gap-16 content-center justify-center items-center justify-items-center py-8 sm:py-[50px] px-6 sm:px-10 ">
+      <div className="flex-1 w-full max-w-[150rem] grid grid-cols-1 md:grid-cols-[60%_40%] gap-8 md:gap-16 content-center justify-center items-center justify-items-center py-8 sm:py-[50px] px-6 sm:px-10 ">
         {/* Image - On top for small screens, moved to the right for medium+ screens */}
         <div className="w-full max-w-full order-first md:order-last md:max-w-5xl mx-auto -mt-8 sm:-mt-16 md:-mt-[124px] md:col-start-2 md:col-end-3 block">
           <Image
@@ -75,7 +75,7 @@ export default function Header() {
         {/* Text content - Below image on small screens, to the left on medium+ screens */}
         <div className="w-full max-w-[90%] text-center md:text-left order-last md:order-first">
           <h1
-            className={`transition-all duration-2000 text-6xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl ${
+            className={`transition-all duration-2000 text-6xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8rem] font-semibold ${
               isVisible.title
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-[20px]'
@@ -105,7 +105,7 @@ export default function Header() {
             simplicity
           </h1>
           <h4
-            className={`mt-4 text-xl sm:text-2xl md:text-2xl transition-all duration-1000 ${
+            className={`mt-10 text-xl sm:text-2xl md:text-3xl transition-all duration-1000 ${
               isVisible.fadeIn
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-[10px]'

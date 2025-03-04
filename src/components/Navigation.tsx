@@ -1,7 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export default function Navigation() {
@@ -11,17 +10,19 @@ export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState(null);
+  const navRef = useRef(null);
 
   // Menu items data
   const menuItems = [
-    { label: 'Features', href: '#section--1' },
-    { label: 'Operations', href: '#section--2' },
-    { label: 'Testimonials', href: '#section--3' },
+    { label: 'Features', href: '#section--1', id: 'features' },
+    { label: 'Operations', href: '#section--2', id: 'operations' },
+    { label: 'Testimonials', href: '#section--3', id: 'testimonials' },
   ];
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 100) {
+      if (window.scrollY > 0) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
@@ -56,22 +57,43 @@ export default function Navigation() {
 
   useEffect(() => {
     // Set initial window width
-    setWindowWidth(window.innerWidth);
-
-    // Add resize listener
-    const handleResize = () => {
+    if (typeof window !== 'undefined') {
       setWindowWidth(window.innerWidth);
-    };
 
-    window.addEventListener('resize', handleResize);
+      // Add resize listener
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+      };
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+      window.addEventListener('resize', handleResize);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
   }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Handle link hover effect
+  const handleLinkHover = id => {
+    setHoveredLink(id);
+  };
+
+  // Handle smooth scrolling
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+
+    if (href && href !== '#') {
+      const section = document.querySelector(href);
+      section?.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
   };
 
   // Check if we're on mobile (less than 768px - md breakpoint)
@@ -82,110 +104,132 @@ export default function Navigation() {
       className={`
         fixed top-0 left-0 w-full z-50
         transition-all duration-300 ease-in-out h-[90px]
-        ${isScrolled ? 'bg-[#f3f3f3] shadow-md' : 'bg-[#f3f3f3]'}
+        ${isScrolled ? 'bg-white/95 shadow-md' : 'bg-[#f3f3f3]'}
         px-6 md:px-12 lg:px-24
+        flex justify-between items-center
       `}
+      ref={navRef}
     >
-      <div className="h-full w-full flex justify-between items-center">
-        {/* Logo and Brand Name */}
-        <div className="flex items-center">
-          <div
-            className="relative flex items-center justify-center w-[40px] h-[40px] cursor-pointer"
-            onMouseEnter={() => setIsLogoHovered(true)}
-            onMouseLeave={() => setIsLogoHovered(false)}
-          >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Image
-                src="/img/logo.svg"
-                alt="Zen Finance logo"
-                width={40}
-                height={40}
-                className={`
-                  transition-all duration-1000
-                  ${!isLogoAnimationComplete ? 'animate-spin-twice' : ''}
-                  ${
-                    isLogoHovered && isLogoAnimationComplete
-                      ? 'animate-spin-twice'
-                      : ''
-                  }
-                `}
-                style={{
-                  animationDuration: '2s',
-                  animationIterationCount: '1',
-                  animationTimingFunction: 'ease-in-out',
-                  transformOrigin: '50% 55%',
-                  cursor: 'pointer',
-                }}
-                onAnimationEnd={() => setIsLogoAnimationComplete(true)}
-              />
-            </div>
-          </div>
-          <div
-            className={`
-              ml-3 text-3xl font-normal overflow-hidden
-              ${showText ? 'w-auto opacity-100' : 'w-0 opacity-0'}
-              transition-all duration-300 ease-in-out
-            `}
-            style={{
-              transform: showText ? 'translateX(0)' : 'translateX(-20px)',
-            }}
-          >
-            <span className="relative inline-block">
-              Zen
-              <span
-                className="absolute bottom-[0px] left-0 w-full"
-                style={{
-                  height: '2px',
-                  backgroundColor: '#5ec576',
-                  animation: 'breath 4s ease-in-out infinite',
-                }}
-              ></span>
-            </span>{' '}
-            Finance
+      {/* Logo and Brand Name */}
+      <div className="flex items-center">
+        <div
+          className="relative flex items-center justify-center w-[40px] h-[40px] cursor-pointer transition-opacity duration-300"
+          onMouseEnter={() => setIsLogoHovered(true)}
+          onMouseLeave={() => setIsLogoHovered(false)}
+          style={{ opacity: hoveredLink ? '0.5' : '1' }}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Image
+              src="/img/logo.svg"
+              alt="Zen Finance logo"
+              width={40}
+              height={40}
+              className="transition-all duration-1000"
+              style={{
+                animation:
+                  !isLogoAnimationComplete ||
+                  (isLogoHovered && isLogoAnimationComplete)
+                    ? 'spin 2s ease-in-out 1'
+                    : 'none',
+                transformOrigin: '50% 55%',
+              }}
+              onAnimationEnd={() => setIsLogoAnimationComplete(true)}
+            />
           </div>
         </div>
-
-        {/* Desktop Navigation Links - using inline style instead of hidden class */}
         <div
-          style={{ display: isMobile ? 'none' : 'flex' }}
-          className="items-center "
+          className={`
+            ml-3 text-3xl font-normal overflow-hidden
+            ${showText ? 'w-auto opacity-100' : 'w-0 opacity-0'}
+            transition-all duration-300 ease-in-out
+          `}
+          style={{
+            transform: showText ? 'translateX(0)' : 'translateX(-20px)',
+            opacity: hoveredLink ? '0.5' : '1',
+          }}
         >
-          {menuItems.map((item, index) => (
-            <Link
-              key={index}
+          <span className="relative inline-block">
+            Zen
+            <span
+              className="absolute bottom-[0px] left-0 w-full"
+              style={{
+                height: '2px',
+                backgroundColor: '#5ec576',
+                animation: 'breath 4s ease-in-out infinite',
+              }}
+            ></span>
+          </span>{' '}
+          Finance
+        </div>
+      </div>
+
+      {/* Desktop Navigation Links */}
+      {!isMobile && (
+        <div className="flex items-center">
+          {menuItems.map(item => (
+            <a
+              key={item.id}
               href={item.href}
-              className="
-    ml-8 lg:ml-16
-    text-base md:text-[1.7rem] font-normal text-gray-800 no-underline
-    transition-transform duration-300 relative
-    after:content-[''] after:absolute after:bottom-[-10px] after:left-0
-    after:h-[2px] after:w-0 after:bg-[#5ec576]
-    after:transition-all after:duration-300
-    hover:after:w-full
-    hover:translate-y-[-3px] hover:scale-105
-    will-change-transform transform-origin-center
-  "
+              className={`
+                ml-8 lg:ml-16
+                text-base md:text-[1.7rem] font-normal text-gray-800 no-underline
+                transition-all duration-300 relative
+                ${
+                  hoveredLink && hoveredLink !== item.id
+                    ? 'opacity-50'
+                    : 'opacity-100'
+                }
+                hover:translate-y-[-3px]
+              `}
+              onMouseEnter={() => handleLinkHover(item.id)}
+              onMouseLeave={() => handleLinkHover(null)}
+              onClick={e => handleNavClick(e, item.href)}
             >
               {item.label}
-            </Link>
+              <span
+                className={`
+                absolute bottom-[-5px] left-0 w-full h-[2px] bg-[#5ec576]
+                transition-transform duration-300 origin-left
+                ${hoveredLink === item.id ? 'scale-x-100' : 'scale-x-0'}
+                ${hoveredLink === item.id ? 'skew-x-[-15deg]' : 'skew-x-0'}
+                ${
+                  hoveredLink === item.id
+                    ? 'bg-gradient-to-tl from-[#39b385] to-[#9be15d]'
+                    : ''
+                }
+                opacity-70
+              `}
+              ></span>
+            </a>
           ))}
-          {/* Desktop Account Button */}
           <Button
             variant="nav"
             size="lg"
-            className="ml-8 lg:ml-16 text-sm md:text-[1.7rem] rounded-3xl"
+            className={`
+              ml-8 lg:ml-16 
+              text-sm md:text-[1.7rem] rounded-3xl
+              transition-all duration-300
+              ${
+                hoveredLink && hoveredLink !== 'account'
+                  ? 'opacity-50'
+                  : 'opacity-100'
+              }
+            `}
+            onMouseEnter={() => handleLinkHover('account')}
+            onMouseLeave={() => handleLinkHover(null)}
             onClick={() => (window.location.href = '#')}
           >
             Open account
           </Button>
         </div>
+      )}
 
-        {/* Mobile Hamburger Button - using inline style instead of hidden class */}
+      {/* Mobile Hamburger Button */}
+      {isMobile && (
         <button
           onClick={toggleMenu}
           type="button"
-          style={{ display: isMobile ? 'inline-flex' : 'none' }}
-          className="items-center p-2 w-12 h-12 justify-center text-gray-500 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
+          className="inline-flex items-center p-2 w-12 h-12 justify-center text-gray-500 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
           aria-controls="navbar-menu"
           aria-expanded={isMenuOpen}
         >
@@ -206,46 +250,27 @@ export default function Navigation() {
             />
           </svg>
         </button>
-      </div>
+      )}
 
-      {/* Mobile Menu - using conditional rendering instead of hidden class */}
+      {/* Mobile Menu */}
       {isMenuOpen && isMobile && (
         <div
-          className="
-            absolute top-[90px] left-0 w-full bg-[#f3f3f3] shadow-md
-            transition-all duration-300 ease-in-out z-40
-          "
+          className="absolute top-[90px] left-0 w-full bg-[#f3f3f3] shadow-md transition-all duration-300 ease-in-out z-40"
           id="navbar-menu"
         >
           <ul className="flex flex-col p-4">
-            {menuItems.map((item, index) => (
-              <li key={index} className="my-2 py-2">
-                <Link
+            {menuItems.map(item => (
+              <li key={item.id} className="my-2 py-2">
+                <a
                   href={item.href}
-                  className="
-                    text-xl font-normal text-inherit no-underline block px-3 py-2
-                    transition-all duration-300
-                    hover:bg-gray-100 hover:text-primary rounded-lg
-                  "
-                  onClick={() => setIsMenuOpen(false)}
+                  className="text-xl font-normal text-inherit no-underline block px-3 py-2 transition-all duration-300 hover:bg-gray-100 hover:text-[#5ec576] rounded-lg relative"
+                  onClick={e => handleNavClick(e, item.href)}
                 >
                   {item.label}
-                </Link>
+                </a>
               </li>
             ))}
             <li className="my-2 py-2">
-              {/* <Link
-                href="#"
-                className="
-                  text-xl font-normal block px-3 py-2 rounded-lg
-                  bg-[#5ec576] text-[#222] text-center mx-2
-                  transition-all duration-300
-                  hover:bg-[#4bbb7d] hover:shadow-md
-                "
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Open account
-              </Link> */}
               <Button
                 variant="primary"
                 size="lg"
@@ -261,6 +286,28 @@ export default function Navigation() {
           </ul>
         </div>
       )}
+
+      {/* Add keyframe animations */}
+      <style jsx>{`
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(720deg);
+          }
+        }
+
+        @keyframes breath {
+          0%,
+          100% {
+            opacity: 0.7;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+      `}</style>
     </nav>
   );
 }

@@ -46,7 +46,7 @@ export default function SignUp() {
         </h3>
       </div>
 
-      <button className="inline-block bg-primary text-[1.9rem] font-medium border-none py-[2rem] px-[5rem] rounded-[10rem] cursor-pointer transition-all duration-300 hover:bg-primary-darker">
+      <button className="inline-block bg-[#5ec576] text-[1.9rem] font-medium border-none py-[2rem] px-[5rem] rounded-[10rem] cursor-pointer transition-all duration-300 hover:bg-primary-darker">
         Open your free account today
       </button>
     </section>
