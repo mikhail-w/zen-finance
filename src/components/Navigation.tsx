@@ -9,6 +9,7 @@ export default function Navigation() {
   const [showText, setShowText] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
+  const [isLogoHovered, setIsLogoHovered] = useState(false);
 
   // Menu items data
   const menuItems = [
@@ -87,7 +88,11 @@ export default function Navigation() {
       <div className="h-full w-full flex justify-between items-center">
         {/* Logo and Brand Name */}
         <div className="flex items-center">
-          <div className="relative flex items-center justify-center w-[40px] h-[40px]">
+          <div
+            className="relative flex items-center justify-center w-[40px] h-[40px] cursor-pointer"
+            onMouseEnter={() => setIsLogoHovered(true)}
+            onMouseLeave={() => setIsLogoHovered(false)}
+          >
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
                 src="/img/logo.svg"
@@ -96,13 +101,19 @@ export default function Navigation() {
                 height={40}
                 className={`
                   transition-all duration-1000
-                  ${isLogoAnimationComplete ? '' : 'animate-spin-twice'}
+                  ${!isLogoAnimationComplete ? 'animate-spin-twice' : ''}
+                  ${
+                    isLogoHovered && isLogoAnimationComplete
+                      ? 'animate-spin-twice'
+                      : ''
+                  }
                 `}
                 style={{
                   animationDuration: '2s',
                   animationIterationCount: '1',
                   animationTimingFunction: 'ease-in-out',
                   transformOrigin: '50% 55%',
+                  cursor: 'pointer',
                 }}
                 onAnimationEnd={() => setIsLogoAnimationComplete(true)}
               />

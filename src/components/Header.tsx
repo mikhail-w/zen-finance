@@ -54,10 +54,10 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="px-4 sm:px-8 md:px-12 pt-12 sm:pt-[100px] h-screen flex flex-col items-center justify-center overflow-hidden">
-      <div className="flex-1 w-full max-w-[150rem] grid grid-cols-1 md:grid-cols-[45%_55%] gap-8 md:gap-16 content-center justify-center items-center justify-items-center py-8 sm:py-[50px] px-6 sm:px-10">
+    <header className="px-4 sm:px-8 md:px-12 pt-12 sm:pt-[100px] min-h-screen flex flex-col items-center justify-center overflow-y-auto">
+      <div className="flex-1 w-full max-w-[150rem] grid grid-cols-1 md:grid-cols-[50%_50%] gap-8 md:gap-16 content-center justify-center items-center justify-items-center py-8 sm:py-[50px] px-6 sm:px-10 ">
         {/* Image - On top for small screens, moved to the right for medium+ screens */}
-        <div className="w-full max-w-full order-first md:order-last md:max-w-5xl mx-auto md:-mt-24 md:col-start-2 md:col-end-3 block">
+        <div className="w-full max-w-full order-first md:order-last md:max-w-5xl mx-auto -mt-8 sm:-mt-16 md:-mt-[124px] md:col-start-2 md:col-end-3 block">
           <Image
             src="/img/hero.svg"
             alt="Minimalist items"
