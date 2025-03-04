@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -168,20 +169,15 @@ export default function Navigation() {
               {item.label}
             </Link>
           ))}
-
-          <Link
-            href="#"
-            className="
-              ml-8 lg:ml-16
-              text-sm md:text-[1.7rem] font-normal py-4 px-4 lg:px-10 rounded-3xl
-              bg-[#5ec576] text-[#222]
-              transition-all duration-300
-              hover:bg-[#4bbb7d] hover:shadow-md
-              transform hover:-translate-y-[4px]
-            "
+          {/* Desktop Account Button */}
+          <Button
+            variant="nav"
+            size="lg"
+            className="ml-8 lg:ml-16 text-sm md:text-[1.7rem] rounded-3xl"
+            onClick={() => (window.location.href = '#')}
           >
             Open account
-          </Link>
+          </Button>
         </div>
 
         {/* Mobile Hamburger Button - using inline style instead of hidden class */}
@@ -238,7 +234,7 @@ export default function Navigation() {
               </li>
             ))}
             <li className="my-2 py-2">
-              <Link
+              {/* <Link
                 href="#"
                 className="
                   text-xl font-normal block px-3 py-2 rounded-lg
@@ -249,7 +245,18 @@ export default function Navigation() {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Open account
-              </Link>
+              </Link> */}
+              <Button
+                variant="primary"
+                size="lg"
+                className="w-full text-xl"
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  window.location.href = '#';
+                }}
+              >
+                Open account
+              </Button>
             </li>
           </ul>
         </div>

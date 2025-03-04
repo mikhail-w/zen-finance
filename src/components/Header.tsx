@@ -114,7 +114,7 @@ export default function Header() {
             Financial clarity, without the complexity.
           </h4>
           <button
-            className={`mt-4 inline-block bg-transparent text-xl sm:text-xl md:text-xl font-medium text-primary border-none border-b border-current pb-[2px] cursor-pointer transition-all duration-300 btn-scroll-to ${
+            className={`mt-4 inline-block bg-transparent text-[#5ec576]  text-xl sm:text-xl md:text-2xl font-medium border-none border-b border-current pb-[2px] cursor-pointer transition-all duration-300 btn-scroll-to ${
               isVisible.fadeInLate
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-[10px]'
