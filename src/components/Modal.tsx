@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 export default function Modal() {
   // Prefix with underscore to indicate intentionally unused variable
   // This will prevent ESLint from flagging it
-  const [_isModalOpen, setIsModalOpen] = useState(false);
+  const [, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const modal = document.querySelector('.modal');
