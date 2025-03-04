@@ -113,7 +113,7 @@ export default function Testimonials() {
       slides.forEach(slide => {
         slide.addEventListener(
           'touchstart',
-          e => {
+          (e: TouchEvent) => {
             touchStartX = e.changedTouches[0].screenX;
           },
           { passive: true }
@@ -121,7 +121,7 @@ export default function Testimonials() {
 
         slide.addEventListener(
           'touchend',
-          e => {
+          (e: TouchEvent) => {
             touchEndX = e.changedTouches[0].screenX;
             handleSwipe();
           },
