@@ -69,7 +69,7 @@ export default function Features() {
     >
       <div className="max-w-[90%] w-full mx-auto mb-20">
         <h2
-          className={`text-2xl font-semibold uppercase text-primary mb-4 transition-all duration-700 delay-300 ${
+          className={`text-2xl lg:text-3xl font-semibold uppercase text-primary mb-4 transition-all duration-700 delay-300 ${
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
@@ -84,7 +84,7 @@ export default function Features() {
         </h3>
       </div>
 
-      <div className="flex flex-col space-y-24 max-w-6xl mx-auto">
+      <div className="flex flex-col space-y-40 max-w-6xl mx-auto">
         {/* Feature 1 */}
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div
@@ -106,7 +106,7 @@ export default function Features() {
 
           <div
             id="feature1-text"
-            className={`feature-item w-full text-xl transition-all duration-700 ease-out ${
+            className={`feature-item w-full text-xl lg:text-2xl transition-all duration-700 ease-out ${
               activeFeatures.includes('feature1-text')
                 ? 'opacity-100 translate-x-0'
                 : 'opacity-0 translate-x-8'
@@ -115,7 +115,7 @@ export default function Features() {
             <div className="flex items-center justify-center bg-[var(--color-primary-opacity)] h-20 w-20 rounded-full mb-5">
               <svg className="h-10 w-10 fill-primary"></svg>
             </div>
-            <h5 className="text-3xl font-semibold mb-5">
+            <h5 className="text-3xl lg:text-4xl font-semibold mb-5">
               100% digital banking
             </h5>
             <p>
@@ -131,7 +131,7 @@ export default function Features() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div
             id="feature2-text"
-            className={`feature-item w-full text-xl md:order-1 transition-all duration-700 ease-out ${
+            className={`feature-item w-full text-xl lg:text-2xl md:order-1 transition-all duration-700 ease-out ${
               activeFeatures.includes('feature2-text')
                 ? 'opacity-100 translate-x-0'
                 : 'opacity-0 translate-x-[-8px]'
@@ -140,7 +140,7 @@ export default function Features() {
             <div className="flex items-center justify-center bg-[var(--color-primary-opacity)] h-20 w-20 rounded-full mb-5">
               <svg className="h-10 w-10 fill-primary"></svg>
             </div>
-            <h5 className="text-3xl font-semibold mb-5">
+            <h5 className="text-3xl lg:text-4xl font-semibold mb-5">
               Intelligent wealth growth
             </h5>
             <p>
@@ -163,9 +163,8 @@ export default function Features() {
             <Image
               src="/img/grow.svg"
               alt="Growing investments"
-              className="w-full h-auto"
-              width={600}
-              height={360}
+              width={450}
+              height={270}
               priority
             />
           </div>
@@ -184,16 +183,15 @@ export default function Features() {
             <Image
               src="/img/card.svg"
               alt="Premium debit card"
-              className="w-full h-auto"
-              width={600}
-              height={360}
+              width={450}
+              height={270}
               priority
             />
           </div>
 
           <div
             id="feature3-text"
-            className={`feature-item w-full text-xl transition-all duration-700 ease-out ${
+            className={`feature-item w-full text-xl lg:text-2xl transition-all duration-700 ease-out ${
               activeFeatures.includes('feature3-text')
                 ? 'opacity-100 translate-x-0'
                 : 'opacity-0 translate-x-8'
@@ -202,7 +200,7 @@ export default function Features() {
             <div className="flex items-center justify-center bg-[var(--color-primary-opacity)] h-20 w-20 rounded-full mb-5">
               <svg className="h-10 w-10 fill-primary"></svg>
             </div>
-            <h5 className="text-3xl font-semibold mb-5">
+            <h5 className="text-3xl lg:text-4xl font-semibold mb-5">
               Premium debit card included
             </h5>
             <p>

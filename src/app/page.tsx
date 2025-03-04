@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import Header from '@/components/Header';
-import Features from '@/components/Features/Features';
+import Features from '@/components/Features';
 import Operations from '@/components/Operations/Operations';
 import Testimonials from '@/components/Testimonials/Testimonials';
 import SignUp from '@/components/SignUp';
@@ -80,10 +80,10 @@ export default function Home() {
       <Navigation />
       <Header />
       <Features />
-      <Operations />
+      {/* <Operations />
       <Testimonials />
       <SignUp />
-      <Footer />
+      <Footer /> */}
       <Modal />
     </main>
   );

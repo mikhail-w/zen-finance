@@ -1,57 +1,78 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="footer">
-      <ul className="footer__nav">
-        <li className="footer__item">
-          <a className="footer__link" href="#">
+    <footer className="py-[10rem] px-[3rem] bg-[#37383d]">
+      <ul className="list-none flex justify-center mb-[5rem]">
+        <li className="mr-[4rem]">
+          <Link
+            href="#"
+            className="text-[1.6rem] text-[#eee] no-underline hover:text-primary"
+          >
             About
-          </a>
+          </Link>
         </li>
-        <li className="footer__item">
-          <a className="footer__link" href="#">
+        <li className="mr-[4rem]">
+          <Link
+            href="#"
+            className="text-[1.6rem] text-[#eee] no-underline hover:text-primary"
+          >
             Pricing
-          </a>
+          </Link>
         </li>
-        <li className="footer__item">
-          <a className="footer__link" href="#">
+        <li className="mr-[4rem]">
+          <Link
+            href="#"
+            className="text-[1.6rem] text-[#eee] no-underline hover:text-primary"
+          >
             Terms of Use
-          </a>
+          </Link>
         </li>
-        <li className="footer__item">
-          <a className="footer__link" href="#">
+        <li className="mr-[4rem]">
+          <Link
+            href="#"
+            className="text-[1.6rem] text-[#eee] no-underline hover:text-primary"
+          >
             Privacy Policy
-          </a>
+          </Link>
         </li>
-        <li className="footer__item">
-          <a className="footer__link" href="#">
+        <li className="mr-[4rem]">
+          <Link
+            href="#"
+            className="text-[1.6rem] text-[#eee] no-underline hover:text-primary"
+          >
             Careers
-          </a>
+          </Link>
         </li>
-        <li className="footer__item">
-          <a className="footer__link" href="#">
+        <li className="mr-[4rem]">
+          <Link
+            href="#"
+            className="text-[1.6rem] text-[#eee] no-underline hover:text-primary"
+          >
             Blog
-          </a>
+          </Link>
         </li>
-        <li className="footer__item">
-          <a className="footer__link" href="#">
+        <li>
+          <Link
+            href="#"
+            className="text-[1.6rem] text-[#eee] no-underline hover:text-primary"
+          >
             Contact Us
-          </a>
+          </Link>
         </li>
       </ul>
       <Image
         src="/img/icon.png"
         alt="Logo"
-        className="footer__logo"
+        className="h-[5rem] w-auto block mx-auto mb-[5rem]"
         width={50}
         height={50}
       />
-      <p className="footer__copyright">
-        &copy; Copyright {new Date().getFullYear()} Zen Finance. All rights
-        reserved.
+      <p className="text-[1.4rem] text-[#aaa] text-center">
+        &copy; Copyright by Zen Finance. All rights reserved.
       </p>
     </footer>
   );
