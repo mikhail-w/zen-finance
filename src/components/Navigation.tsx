@@ -119,7 +119,6 @@ export default function Navigation() {
               />
             </div>
           </div>
-
           <div
             className={`
               ml-3 text-3xl font-normal overflow-hidden
@@ -130,7 +129,11 @@ export default function Navigation() {
               transform: showText ? 'translateX(0)' : 'translateX(-20px)',
             }}
           >
-            Zen Finance
+            <span className="relative inline-block">
+              Zen
+              <span className="absolute bottom-0 left-0 w-full h-[3px] bg-[#5ec576]"></span>
+            </span>{' '}
+            Finance
           </div>
         </div>
 
