@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button'; // Import your custom Button component
+import { SignOutButton } from '@clerk/nextjs';
 
 const Dashboard = () => {
   const router = useRouter();
@@ -17,6 +18,13 @@ const Dashboard = () => {
       >
         Back to Home
       </Button>
+      <div className="mt-20">
+        <SignOutButton>
+          <button className="px-4 py-2 bg-red-500 text-white rounded">
+            Sign Out
+          </button>
+        </SignOutButton>
+      </div>
     </div>
   );
 };

@@ -64,10 +64,10 @@ export default function Header() {
             width={800}
             height={600}
             priority
-            className={`w-full h-auto object-contain transition-all duration-2000 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${
+            className={`w-full h-auto object-contain transition-all duration-2000 ease-in-out ${
               isVisible.image
                 ? 'opacity-100 translate-x-0'
-                : 'opacity-0 translate-x-[30px]'
+                : 'opacity-0 translate-x-8'
             }`}
           />
         </div>
@@ -78,14 +78,14 @@ export default function Header() {
             className={`transition-all duration-2000 text-6xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8rem] font-semibold ${
               isVisible.title
                 ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-[20px]'
+                : 'opacity-0 translate-y-5'
             }`}
           >
             The art of{' '}
             <span className="relative inline-block">
               Finance
               <span
-                className={`absolute bottom-0 left-[-10px] sm:left-[-10px] md:left-[-10px] lg:left-[-20px]  h-full opacity-70 z-[-1] origin-bottom-left bg-gradient-primary transition-all duration-2000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                className={`absolute bottom-0 left-[-10px] sm:left-[-10px] md:left-[-10px] lg:left-[-20px]  h-full opacity-70 z-[-1] origin-bottom-left bg-gradient-primary transition-all duration-2000 ease-in-out ${
                   isVisible.highlight1 ? 'w-full' : 'w-0'
                 }`}
                 style={{ transform: 'scale(1.07, 1.05) skewX(-15deg)' }}
@@ -96,7 +96,7 @@ export default function Header() {
             <span className="relative inline-block">
               Effortless
               <span
-                className={`absolute bottom-0 left-[-10px] sm:left-[-10px] md:left-[-10px] lg:left-[-20px] h-full opacity-70 z-[-1] origin-bottom-left bg-gradient-primary transition-all duration-2000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                className={`absolute bottom-0 left-[-10px] sm:left-[-10px] md:left-[-10px] lg:left-[-20px] h-full opacity-70 z-[-1] origin-bottom-left bg-gradient-primary transition-all duration-2000 ease-in-out ${
                   isVisible.highlight2 ? 'w-full' : 'w-0'
                 }`}
                 style={{ transform: 'scale(1.07, 1.05) skewX(-15deg)' }}
@@ -108,7 +108,7 @@ export default function Header() {
             className={`mt-10 text-xl sm:text-2xl md:text-3xl transition-all duration-1000 ${
               isVisible.fadeIn
                 ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-[10px]'
+                : 'opacity-0 translate-y-3'
             }`}
           >
             Financial clarity, without the complexity.
@@ -117,7 +117,7 @@ export default function Header() {
             className={`mt-4 inline-block bg-transparent text-[#5ec576]  text-xl sm:text-xl md:text-2xl font-medium border-none border-b border-current pb-[2px] cursor-pointer transition-all duration-300 btn-scroll-to ${
               isVisible.fadeInLate
                 ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-[10px]'
+                : 'opacity-0 translate-y-3'
             }
              hover:translate-y-[-3px] hover:scale-105
             `}

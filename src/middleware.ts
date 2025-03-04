@@ -1,6 +1,17 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-export default clerkMiddleware();
+// Update this to include your home page route
+const publicRoutes = createRouteMatcher([
+  '/', // Home page
+  '/sign-in(.*)', // Sign-in pages
+  '/sign-up(.*)', // Sign-up pages
+]);
+
+export default clerkMiddleware(async (auth, request) => {
+  if (!publicRoutes(request)) {
+    await auth.protect();
+  }
+});
 
 export const config = {
   matcher: [

@@ -84,13 +84,36 @@ export default function Navigation() {
     setHoveredLink(id);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  };
+
   // Handle smooth scrolling
   const handleNavClick = (e, href) => {
     e.preventDefault();
 
     if (href && href !== '#') {
       const section = document.querySelector(href);
-      section?.scrollIntoView({ behavior: 'smooth' });
+      if (section) {
+        // Get the navbar height
+        const navbarHeight = navRef.current.offsetHeight;
+
+        // Get the position of the section relative to the top of the document
+        const sectionPosition =
+          section.getBoundingClientRect().top + window.pageYOffset;
+
+        // Calculate the final scroll position, accounting for navbar height and adding some padding
+        const offsetPosition = sectionPosition - navbarHeight;
+
+        // Scroll to the calculated position
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth',
+        });
+      }
     }
 
     if (isMenuOpen) {
@@ -118,6 +141,7 @@ export default function Navigation() {
           className="relative flex items-center justify-center w-[40px] h-[40px] cursor-pointer transition-opacity duration-300"
           onMouseEnter={() => setIsLogoHovered(true)}
           onMouseLeave={() => setIsLogoHovered(false)}
+          onClick={scrollToTop}
           style={{ opacity: hoveredLink ? '0.5' : '1' }}
         >
           <div className="absolute inset-0 flex items-center justify-center">
