@@ -118,7 +118,9 @@ export default function Header() {
               isVisible.fadeInLate
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-[10px]'
-            }`}
+            }
+             hover:translate-y-[-3px] hover:scale-105
+            `}
           >
             Learn more &#8595;
           </button>
