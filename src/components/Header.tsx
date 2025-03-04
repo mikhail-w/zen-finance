@@ -75,7 +75,7 @@ export default function Header() {
         {/* Text content - Below image on small screens, to the left on medium+ screens */}
         <div className="w-full max-w-[90%] text-center md:text-left order-last md:order-first">
           <h1
-            className={`transition-all duration-2000 text-4xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl ${
+            className={`transition-all duration-2000 text-6xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl ${
               isVisible.title
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-[20px]'
@@ -105,7 +105,7 @@ export default function Header() {
             simplicity
           </h1>
           <h4
-            className={`mt-4 text-base sm:text-lg md:text-2xl transition-all duration-1000 ${
+            className={`mt-4 text-xl sm:text-2xl md:text-2xl transition-all duration-1000 ${
               isVisible.fadeIn
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-[10px]'
@@ -114,7 +114,7 @@ export default function Header() {
             Financial clarity, without the complexity.
           </h4>
           <button
-            className={`mt-4 inline-block bg-transparent text-base sm:text-lg md:text-xl font-medium text-primary border-none border-b border-current pb-[2px] cursor-pointer transition-all duration-300 btn-scroll-to ${
+            className={`mt-4 inline-block bg-transparent text-xl sm:text-xl md:text-xl font-medium text-primary border-none border-b border-current pb-[2px] cursor-pointer transition-all duration-300 btn-scroll-to ${
               isVisible.fadeInLate
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-[10px]'
