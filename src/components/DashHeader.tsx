@@ -1,6 +1,9 @@
 import React from 'react';
 import DashLogo from './DashLogo';
 import DashNavigation from './DashNavigation';
+import DashWelcomMsg from './DashWelcomeMsg';
+import { UserButton, ClerkLoading, ClerkLoaded } from '@clerk/nextjs';
+import { Loader2 } from 'lucide-react';
 
 const DashHeader = () => {
   return (
@@ -11,7 +14,21 @@ const DashHeader = () => {
             <DashLogo />
             <DashNavigation />
           </div>
+          <ClerkLoaded>
+            <UserButton
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: 'h-16 w-16 border-2 border-white',
+                  userButtonTrigger: 'focus:shadow-none',
+                },
+              }}
+            />
+          </ClerkLoaded>
+          <ClerkLoading>
+            <Loader2 className="size-8 animate-spin text-slate-400" />
+          </ClerkLoading>
         </div>
+        <DashWelcomMsg />
       </div>
     </header>
   );
