@@ -11,7 +11,7 @@ export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
   const [isLogoHovered, setIsLogoHovered] = useState(false);
-  const [hoveredLink, setHoveredLink] = useState(null);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const navRef = useRef(null);
   const router = useRouter();
 
@@ -80,7 +80,7 @@ export default function Navigation() {
   };
 
   // Handle link hover effect
-  const handleLinkHover = id => {
+  const handleLinkHover = (id: string | null) => {
     setHoveredLink(id);
   };
 
@@ -92,14 +92,19 @@ export default function Navigation() {
   };
 
   // Handle smooth scrolling
-  const handleNavClick = (e, href) => {
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) => {
     e.preventDefault();
 
     if (href && href !== '#') {
       const section = document.querySelector(href);
       if (section) {
         // Get the navbar height
-        const navbarHeight = navRef.current.offsetHeight;
+        const navbarHeight = navRef.current
+          ? (navRef.current as HTMLElement).offsetHeight
+          : 0;
 
         // Get the position of the section relative to the top of the document
         const sectionPosition =
