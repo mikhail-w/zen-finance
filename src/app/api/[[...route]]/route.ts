@@ -17,6 +17,7 @@ app.get('/hello', clerkMiddleware(), c => {
 
   return c.json({
     message: 'Hello Next.js!',
+    userId: auth.userId,
   });
 });
 
