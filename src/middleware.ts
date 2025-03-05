@@ -1,6 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
 
-// Update this to include your home page route
 const publicRoutes = createRouteMatcher([
   '/', // Home page
   '/sign-in(.*)', // Sign-in pages
@@ -8,15 +8,26 @@ const publicRoutes = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
+  const url = new URL(request.url);
+
+  // Skip authentication for API routes, let them handle it
+  if (url.pathname.startsWith('/api/')) {
+    return NextResponse.next();
+  }
+
+  // Protect other routes
   if (!publicRoutes(request)) {
+    console.log('Middleware enforcing auth');
     await auth.protect();
   }
+
+  return NextResponse.next();
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Skip Next.js internals and static files
+    '/((?!_next|.*\\..*).*)',
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],
