@@ -10,7 +10,6 @@ import {
   UserButton,
 } from '@clerk/nextjs';
 import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
 
 // Configure the font
 const poppins = Poppins({
