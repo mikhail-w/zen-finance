@@ -34,14 +34,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={poppins.className}>
-          <SignedOut>
-            <SignInButton />
-            <SignUpButton />
-          </SignedOut>
-
-          {children}
-        </body>
+        <body className={poppins.className}>{children}</body>
       </html>
     </ClerkProvider>
   );

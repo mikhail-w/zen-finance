@@ -5,6 +5,8 @@ const publicRoutes = createRouteMatcher([
   '/', // Home page
   '/sign-in(.*)', // Sign-in pages
   '/sign-up(.*)', // Sign-up pages
+  '/api/(.*)', // Allow all API routes
+  '/v1/oauth_callback(.*)', // Allow OAuth callbacks
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
