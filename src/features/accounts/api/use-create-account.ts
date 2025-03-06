@@ -1,32 +1,28 @@
-import { InferRequestType, InferResponseType } from 'hono';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { client } from '@/lib/hono';
 import { toast } from 'sonner';
 
-// Define the account data structure
-interface Account {
-  id: string;
-  plaidId: string | null;
+// Define the account data structure exactly as the API returns it
+interface AccountData {
   name: string;
+  id: string;
   userId: string;
+  plaidId?: string | null;
 }
 
 // Define the response data structure
 interface AccountResponse {
-  data: Account;
-  error?: string;
+  data: AccountData[];
 }
 
-// Define the request data structure
+// Define the request data structure with only the fields needed for creation
 interface AccountRequest {
   name: string;
-  plaidId?: string | null;
-  userId?: string;
 }
 
 export const useCreateAccount = () => {
   const queryClient = useQueryClient();
-  const mutation = useMutation<AccountResponse, Error, AccountRequest>({
+  const mutation = useMutation<AccountData, Error, AccountRequest>({
     mutationFn: async data => {
       const response = await client.api.accounts.$post({ json: data });
 
@@ -34,7 +30,8 @@ export const useCreateAccount = () => {
         throw new Error('Failed to create account');
       }
 
-      return await response.json();
+      const result = await response.json();
+      return result.data[0]; // Return the first account from the array
     },
     onSuccess: () => {
       toast.success('Account created');
