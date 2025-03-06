@@ -3,25 +3,22 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { client } from '@/lib/hono';
 import { toast } from 'sonner';
 
-// Define the account data structure
-interface Account {
+// Define the account data structure exactly as the API returns it
+interface AccountData {
+  name: string;
   id: string;
   plaidId: string | null;
-  name: string;
   userId: string;
 }
 
 // Define the response data structure
 interface AccountResponse {
-  data: Account;
-  error?: string;
+  data: AccountData;
 }
 
-// Define the request data structure
+// Define the request data structure with only the fields needed for creation
 interface AccountRequest {
   name: string;
-  plaidId?: string | null;
-  userId?: string;
 }
 
 export const useCreateAccount = () => {
