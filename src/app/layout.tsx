@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import { QueryProvider } from '@/providers/query-provider';
+import { Toaster } from '@/components/ui/sonner';
 import {
   ClerkProvider,
   SignInButton,
@@ -11,6 +12,7 @@ import {
   UserButton,
 } from '@clerk/nextjs';
 import { Geist, Geist_Mono } from 'next/font/google';
+import SheetPovider from '@/providers/sheet-provider';
 
 // Configure the font
 const poppins = Poppins({
@@ -36,7 +38,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={poppins.className}>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <SheetPovider />
+            <Toaster />
+            {children}
+          </QueryProvider>
         </body>
       </html>
     </ClerkProvider>
