@@ -1,15 +1,23 @@
 'use client'; // Required for client-side navigation
 
+'use client';
+import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button'; // Import your custom Button component
 import { SignOutButton } from '@clerk/nextjs';
 
 const Dashboard = () => {
   const router = useRouter();
+  const accountsQuery = useGetAccounts();
 
   return (
     <div className="flex flex-col items-center justify-center h-screen text-5xl font-bold">
       <p className="mb-8">Dashboard</p>
+      <div>
+        {accountsQuery.data?.map(account => (
+          <div key={account.id}>{account.name}</div>
+        ))}
+      </div>
       <Button
         variant="nav"
         size="lg"
