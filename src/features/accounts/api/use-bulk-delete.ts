@@ -17,6 +17,7 @@ export const useBulkDeleteAccounts = () => {
       const response = await client.api.accounts['bulk-delete']['$post']({
         json,
       });
+      return response;
     },
     onSuccess: () => {
       toast.success('Account(s) deleted');
