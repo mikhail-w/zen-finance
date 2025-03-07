@@ -1,5 +1,5 @@
 import { toast } from 'sonner';
-import { InferRequestType, InferResponseType } from 'hono';
+import { InferRequestType } from 'hono';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { client } from '@/lib/hono';
 
@@ -7,15 +7,6 @@ import { client } from '@/lib/hono';
 type SuccessResponse = {
   data: { id: string }[];
 };
-
-type ErrorResponse = {
-  error: string;
-};
-
-// Use a type guard to differentiate between success and error responses
-function isSuccessResponse(response: any): response is SuccessResponse {
-  return response && 'data' in response;
-}
 
 type RequestType = InferRequestType<
   (typeof client.api.accounts)['bulk-delete']['$post']
@@ -31,12 +22,12 @@ export const useBulkDeleteAccounts = () => {
 
       const result = await response.json();
 
-      // Use the type guard to narrow the type
-      if (!isSuccessResponse(result)) {
+      // Simple validation without type guard
+      if (!result || !('data' in result)) {
         throw new Error('Failed to delete accounts');
       }
 
-      return result;
+      return result as SuccessResponse;
     },
     onSuccess: () => {
       toast.success('Account(s) deleted');
