@@ -15,7 +15,7 @@ import {
 export const useConfirm = (
   title: string,
   message: string
-): [() => JSX.Element, () => Promise<boolean>] => {
+): [() => React.ReactNode, () => Promise<boolean>] => {
   const [promise, setPromise] = useState<{
     resolve: (value: boolean) => void;
   } | null>(null);
@@ -46,8 +46,8 @@ export const useConfirm = (
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{message}</DialogDescription>
         </DialogHeader>
-        <DialogFooter className="pt-2">
-          <Button onClick={handleCancel} variant={'outline'}>
+        <DialogFooter>
+          <Button variant="outline" onClick={handleCancel}>
             Cancel
           </Button>
           <Button onClick={handleConfirm}>Confirm</Button>
@@ -55,5 +55,8 @@ export const useConfirm = (
       </DialogContent>
     </Dialog>
   );
+
   return [ConfirmationDialog, confirm];
 };
+
+export default useConfirm;
