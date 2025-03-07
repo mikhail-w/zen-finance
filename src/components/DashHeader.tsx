@@ -18,7 +18,7 @@ const DashHeader = () => {
             <UserButton
               appearance={{
                 elements: {
-                  userButtonAvatarBox: 'h-16 w-16 border-2 border-white',
+                  userButtonAvatarBox: 'h-12 w-12 border-2 border-white',
                   userButtonTrigger: 'focus:shadow-none',
                 },
               }}

@@ -15,11 +15,11 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col items-center justify-start h-screen mt-8 text-5xl font-bold">
       <p className="mb-8">Dashboard</p>
-      <div>
+      {/* <div>
         {accountsQuery.data?.map(account => (
           <div key={account.id}>{account.name}</div>
         ))}
-      </div>
+      </div> */}
       <Button className="mb-8" onClick={onOpen}>
         Add an Account
       </Button>

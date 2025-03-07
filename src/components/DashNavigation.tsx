@@ -23,7 +23,7 @@ const routes = [
     label: 'Transactions',
   },
   {
-    href: '/accounts',
+    href: '/dashboard/accounts',
     label: 'Accounts',
   },
   {
@@ -41,7 +41,11 @@ const DashNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
-  const isMobile = useMedia('(max-width: 767px)', false);
+  const isMobile = useMedia('(max-width: 900px)', false);
+
+  // Add additional media queries for responsive font sizes
+  const isSmallScreen = useMedia('(max-width: 1110px)', false);
+  const isMediumScreen = useMedia('(max-width: 1279px)', false);
 
   // Add a delay to close the sheet when a route is clicked
   const onClick = (href: string) => {
@@ -82,7 +86,7 @@ const DashNavigation = () => {
                 variant={route.href === pathname ? 'secondary' : 'ghost'}
                 size={'lg'}
                 onClick={() => onClick(route.href)}
-                className="w-full justify-start text-2xl transition-all duration-300"
+                className="w-full justify-start text-xl sm:text-2xl transition-all duration-300"
               >
                 {route.label}
               </Button>
@@ -93,8 +97,17 @@ const DashNavigation = () => {
     );
   }
 
+  // Determine font size class based on screen size
+  const getFontSizeClass = () => {
+    if (isSmallScreen) return 'text-xs';
+    if (isMediumScreen) return 'text-sm';
+    return 'text-lg';
+  };
+
   return (
-    <nav className="hidden md:flex items-center gap-x-2 overflow-x-auto font-semibold text-xl ml-10">
+    <nav
+      className={`hidden md:flex items-center gap-x-2 overflow-x-auto font-semibold ${getFontSizeClass()} ml-10`}
+    >
       {routes.map(route => (
         <DashNavButton
           key={route.href}

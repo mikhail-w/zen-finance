@@ -9,6 +9,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        custom: '1070px',
+      },
       colors: {
         primary: {
           DEFAULT: 'hsl(var(--primary))',

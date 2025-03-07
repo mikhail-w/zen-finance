@@ -6,7 +6,7 @@ const DashLogo = () => {
   return (
     <Link href={'/'}>
       {' '}
-      <div className="items-center hidden md:flex">
+      <div className="items-center hidden custom:flex">
         <Image
           src="/img/logo.svg"
           alt="Zen Finance logo"

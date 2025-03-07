@@ -127,7 +127,7 @@ export default function Navigation() {
   };
 
   // Check if we're on mobile (less than 768px - md breakpoint)
-  const isMobile = windowWidth < 768;
+  const isMobile = windowWidth < 900;
 
   return (
     <nav
@@ -135,7 +135,7 @@ export default function Navigation() {
         fixed top-0 left-0 w-full z-50
         transition-all duration-300 ease-in-out h-[90px]
         ${isScrolled ? 'bg-white/95 shadow-md' : 'bg-[#f3f3f3]'}
-        px-6 md:px-12 lg:px-24
+        px-4 md:px-6 lg:px-10
         flex justify-between items-center
       `}
       ref={navRef}
@@ -170,7 +170,7 @@ export default function Navigation() {
         </div>
         <div
           className={`
-            ml-3 text-3xl font-normal overflow-hidden
+            ml-3 text-xl font-normal overflow-hidden
             ${showText ? 'w-auto opacity-100' : 'w-0 opacity-0'}
             transition-all duration-300 ease-in-out
           `}
@@ -203,14 +203,14 @@ export default function Navigation() {
               href={item.href}
               className={`
                 ml-8 lg:ml-16
-                text-base md:text-[1.7rem] font-normal text-gray-800 no-underline
+                text-base md:text-[1rem] font-normal text-gray-800 no-underline
                 transition-all duration-300 relative
                 ${
                   hoveredLink && hoveredLink !== item.id
                     ? 'opacity-50'
                     : 'opacity-100'
                 }
-                hover:translate-y-[-3px]
+                hover:translate-y-[-2px]
               `}
               onMouseEnter={() => handleLinkHover(item.id)}
               onMouseLeave={() => handleLinkHover(null)}
@@ -238,7 +238,7 @@ export default function Navigation() {
             size="lg"
             className={`
               ml-8 lg:ml-16 
-              text-sm md:text-[1.7rem] rounded-3xl
+              text-sm md:text-[1rem] rounded-3xl
               transition-all duration-300
               ${
                 hoveredLink && hoveredLink !== 'account'
