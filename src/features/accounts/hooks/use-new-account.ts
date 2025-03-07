@@ -1,12 +1,14 @@
+'use client';
+
 import { create } from 'zustand';
 
-type NewAccountState = {
+interface NewAccountStore {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-};
+}
 
-export const useNewAccount = create<NewAccountState>(set => ({
+export const useNewAccount = create<NewAccountStore>(set => ({
   isOpen: false,
   onOpen: () => set({ isOpen: true }),
   onClose: () => set({ isOpen: false }),

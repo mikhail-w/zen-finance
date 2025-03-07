@@ -56,7 +56,7 @@ const AccountsPage = () => {
               const ids = row.map(r => r.original.id);
               deleteAccounts.mutate({ ids });
             }}
-            filterKey="email"
+            filterKey="name"
             columns={columns}
             data={accounts}
           />

@@ -53,8 +53,4 @@ export const columns: ColumnDef<ResponseType>[] = [
       );
     },
   },
-  {
-    accessorKey: 'amount',
-    header: 'Amount',
-  },
 ];
