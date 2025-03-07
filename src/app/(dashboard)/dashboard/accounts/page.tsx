@@ -40,7 +40,13 @@ const AccountsPage = () => {
           </Button>
         </CardHeader>
         <CardContent>
-          <DataTable filterKey="email" columns={columns} data={data} />
+          <DataTable
+            disabled={false}
+            onDelete={() => {}}
+            filterKey="email"
+            columns={columns}
+            data={data}
+          />
         </CardContent>
       </Card>
     </div>
