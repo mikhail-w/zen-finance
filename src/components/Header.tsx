@@ -77,7 +77,7 @@ export default function Header() {
         {/* Text content - Below image on small screens, to the left on medium+ screens */}
         <div className="w-full max-w-full text-center lg:text-left order-last lg:order-first mt-6 lg:mt-0">
           <h1
-            className={`transition-all duration-2000 text-5xl sm:text-5xl md:text-6xl lg:text-7.5xl font-light leading-tight ${
+            className={`transition-all duration-2000 text-4xl sm:text-4xl md:text-6xl lg:text-7.5xl font-light leading-tight ${
               isVisible.title
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-5'
