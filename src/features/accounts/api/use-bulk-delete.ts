@@ -3,10 +3,7 @@ import { InferRequestType, InferResponseType } from 'hono';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { client } from '@/lib/hono';
 
-type ApiResponseType = InferResponseType<
-  (typeof client.api.accounts)['bulk-delete']['$post']
->;
-
+// Define explicit response type structure
 type ResponseType = {
   data: { id: string }[];
 };
@@ -23,9 +20,14 @@ export const useBulkDeleteAccounts = () => {
         json,
       });
 
-      // Extract the JSON data from the response
-      const data = await response.json();
-      return data;
+      const result = await response.json();
+
+      // Check if the response has the expected structure
+      if (!response.ok || !result.data) {
+        throw new Error('Failed to delete accounts');
+      }
+
+      return result as ResponseType;
     },
     onSuccess: () => {
       toast.success('Account(s) deleted');
