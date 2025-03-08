@@ -7,6 +7,8 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ApiError } from 'next/dist/server/api-utils';
+import { Actions } from './actions';
+import { Original_Surfer } from 'next/font/google';
 
 export type ResponseType = InferResponseType<
   typeof client.api.accounts.$get,
@@ -52,5 +54,9 @@ export const columns: ColumnDef<ResponseType>[] = [
         </Button>
       );
     },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => <Actions id={row.original.id} />,
   },
 ];
