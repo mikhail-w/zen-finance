@@ -2,6 +2,10 @@
 
 A modern finance tracking application built with Next.js and Tailwind CSS.
 
+## 🌐 Live Demo
+
+Check out the live version of the app: **(https://zen-finance.vercel.app/)**.
+
 ## Getting Started
 
 These instructions will get your copy of the project up and running on your
