@@ -7,6 +7,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ApiError } from 'next/dist/server/api-utils';
+import { Actions } from './actions';
 
 export type ResponseType = InferResponseType<
   typeof client.api.accounts.$get,
@@ -44,6 +45,7 @@ export const columns: ColumnDef<ResponseType>[] = [
     header: ({ column }) => {
       return (
         <Button
+          className="pl-0"
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
@@ -52,5 +54,9 @@ export const columns: ColumnDef<ResponseType>[] = [
         </Button>
       );
     },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => <Actions id={row.original.id} />,
   },
 ];
