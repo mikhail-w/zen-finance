@@ -10,7 +10,7 @@ import {
 import { useGetAccount } from '@/features/accounts/api/use-get-account';
 import { useOpenAccount } from '@/features/accounts/hooks/use-open-account';
 import { AccountForm } from '@/features/accounts/components/account-form';
-import { useCreateAccount } from '@/features/accounts/api/use-create-account';
+import { useEditAccount } from '@/features/accounts/api/use-edit-account';
 import { insertAccountSchema } from '@/db/schema';
 import { Loader2 } from 'lucide-react';
 
@@ -23,10 +23,11 @@ type FormValues = z.input<typeof formSchema>;
 export const EditAccountSheet = () => {
   const { isOpen, onClose, id } = useOpenAccount();
   const accountQuery = useGetAccount(id);
-  const mutation = useCreateAccount();
+  const editMutation = useEditAccount(id);
+  const isPending = editMutation.isPending;
   const isLoading = accountQuery.isLoading;
   const onSubmit = (values: FormValues) => {
-    mutation.mutate(values, {
+    editMutation.mutate(values, {
       onSuccess: () => {
         onClose();
       },
@@ -54,7 +55,7 @@ export const EditAccountSheet = () => {
           <AccountForm
             id={id}
             onSubmit={onSubmit}
-            disabled={mutation.isPending}
+            disabled={isPending}
             defaultValues={defaultValues}
           />
         )}
