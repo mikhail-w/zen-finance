@@ -10,7 +10,7 @@ import { ApiError } from 'next/dist/server/api-utils';
 import { Actions } from './actions';
 
 export type ResponseType = InferResponseType<
-  typeof client.api.accounts.$get,
+  typeof client.api.categories.$get,
   200
 >['data'][0];
 
