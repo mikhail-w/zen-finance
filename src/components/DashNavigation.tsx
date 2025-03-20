@@ -19,7 +19,7 @@ const routes = [
     label: 'Overview',
   },
   {
-    href: '/transactions',
+    href: '/dashboard/transactions',
     label: 'Transactions',
   },
   {
@@ -27,11 +27,11 @@ const routes = [
     label: 'Accounts',
   },
   {
-    href: '/categories',
+    href: '/dashboard/categories',
     label: 'Categories',
   },
   {
-    href: '/settings',
+    href: '/dashboard/settings',
     label: 'Settings',
   },
 ];
