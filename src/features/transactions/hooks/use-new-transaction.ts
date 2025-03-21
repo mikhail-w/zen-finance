@@ -2,13 +2,13 @@
 
 import { create } from 'zustand';
 
-interface NewAccountStore {
+type NewTransactionState = {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-}
+};
 
-export const useNewAccount = create<NewAccountStore>(set => ({
+export const useNewTransaction = create<NewTransactionState>(set => ({
   isOpen: false,
   onOpen: () => set({ isOpen: true }),
   onClose: () => set({ isOpen: false }),
