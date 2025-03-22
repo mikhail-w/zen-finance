@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
@@ -10,30 +10,35 @@ import { useGetTransactions } from '@/features/transactions/api/use-get-transact
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBulkDeleteTransactions } from '@/features/transactions/api/use-bulk-delete-transactions';
 
-const TransactionsPage = () => {
+// Loading component for Suspense fallback
+const TransactionsLoading = () => (
+  <div className="max-w-screen-md mx-auto w-full pb-10 -mt-24">
+    <Card className="border-none drop-shadow-sm">
+      <CardHeader>
+        <Skeleton className="h-8 w-48" />
+      </CardHeader>
+      <CardContent>
+        <div className="h-[500px] w-full flex items-center justify-center">
+          <Loader2 className="size-6 text-slate-300 animate-spin" />
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+);
+
+// The main transactions content component
+// This will be wrapped in Suspense since it uses hooks that depend on useSearchParams()
+const TransactionsContent = () => {
   const newTransaction = useNewTransaction();
   const deleteTransactions = useBulkDeleteTransactions();
-  const transactionsQuery = useGetTransactions();
+  const transactionsQuery = useGetTransactions(); // This uses useSearchParams() internally
   const transactions = transactionsQuery.data || [];
 
   const isDisabled =
     transactionsQuery.isLoading || deleteTransactions.isPending;
 
   if (transactionsQuery.isLoading) {
-    return (
-      <div className="max-w-screen-md mx-auto w-full pb-10 -mt-24">
-        <Card className="border-none drop-shadow-sm">
-          <CardHeader>
-            <Skeleton className="h-8 w-48" />
-          </CardHeader>
-          <CardContent>
-            <div className="h-[500px] w-full flex items-center justify-center">
-              <Loader2 className="size-6 text-slate-300 animate-spin" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <TransactionsLoading />;
   }
 
   return (
@@ -66,6 +71,15 @@ const TransactionsPage = () => {
         </CardContent>
       </Card>
     </div>
+  );
+};
+
+// Main page component that wraps the content in a Suspense boundary
+const TransactionsPage = () => {
+  return (
+    <Suspense fallback={<TransactionsLoading />}>
+      <TransactionsContent />
+    </Suspense>
   );
 };
 
