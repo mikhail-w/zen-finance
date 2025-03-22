@@ -18,6 +18,11 @@ type Props = {
   placeholder?: string;
 };
 
+// Define a proper interface for the day picker element with showMonth method
+interface DayPickerWithShowMonth extends HTMLElement {
+  showMonth: (date: Date) => void;
+}
+
 export const DatePicker = ({
   value,
   onChange,
@@ -126,8 +131,9 @@ export const DatePicker = ({
                   goToMonth={date => {
                     const dayPicker = calendarRef.current?.querySelector(
                       '.rdp'
-                    ) as any;
-                    if (dayPicker?.showMonth) {
+                    ) as DayPickerWithShowMonth | null;
+
+                    if (dayPicker && dayPicker.showMonth) {
                       dayPicker.showMonth(date);
                     }
                   }}
