@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { format } from 'date-fns';
-import {
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 
@@ -17,11 +13,6 @@ type Props = {
   disabled?: boolean;
   placeholder?: string;
 };
-
-// Define a proper interface for the day picker element with showMonth method
-interface DayPickerWithShowMonth extends HTMLElement {
-  showMonth: (date: Date) => void;
-}
 
 export const DatePicker = ({
   value,
@@ -54,38 +45,6 @@ export const DatePicker = ({
     };
   }, [isOpen]);
 
-  // Function to navigate to next month
-  const handleNextMonthClick = (currentMonth: Date) => {
-    const dayPicker = calendarRef.current?.querySelector(
-      '.rdp'
-    ) as DayPickerWithShowMonth | null;
-
-    if (dayPicker && dayPicker.showMonth) {
-      const nextMonth = new Date(
-        currentMonth.getFullYear(),
-        currentMonth.getMonth() + 1,
-        1
-      );
-      dayPicker.showMonth(nextMonth);
-    }
-  };
-
-  // Function to navigate to previous month
-  const handlePrevMonthClick = (currentMonth: Date) => {
-    const dayPicker = calendarRef.current?.querySelector(
-      '.rdp'
-    ) as DayPickerWithShowMonth | null;
-
-    if (dayPicker && dayPicker.showMonth) {
-      const prevMonth = new Date(
-        currentMonth.getFullYear(),
-        currentMonth.getMonth() - 1,
-        1
-      );
-      dayPicker.showMonth(prevMonth);
-    }
-  };
-
   return (
     <div className="relative">
       <Button
@@ -117,24 +76,8 @@ export const DatePicker = ({
               setIsOpen(false);
             }}
             disabled={disabled}
-            captionLayout="dropdown"
             showOutsideDays
             fixedWeeks
-            navProps={{
-              className: 'flex items-center justify-between p-1',
-              prevButtonProps: {
-                className:
-                  'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
-                children: <ChevronLeft className="h-4 w-4" />,
-                disabled: disabled,
-              },
-              nextButtonProps: {
-                className:
-                  'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
-                children: <ChevronRight className="h-4 w-4" />,
-                disabled: disabled,
-              },
-            }}
             classNames={{
               months: 'flex flex-col space-y-4',
               month: 'space-y-4',
@@ -143,6 +86,8 @@ export const DatePicker = ({
               nav: 'space-x-1 flex items-center',
               nav_button:
                 'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+              nav_button_previous: 'absolute left-1',
+              nav_button_next: 'absolute right-1',
               table: 'w-full border-collapse space-y-1',
               head_row: 'flex',
               head_cell:
