@@ -54,43 +54,36 @@ export const DatePicker = ({
     };
   }, [isOpen]);
 
-  // Custom navigation component for the calendar
-  const CustomNavigation = ({
-    goToMonth,
-    nextMonth,
-    previousMonth,
-    currentMonth,
-  }: {
-    goToMonth: (date: Date) => void;
-    nextMonth: Date | undefined;
-    previousMonth: Date | undefined;
-    currentMonth: Date;
-  }) => {
-    return (
-      <div className="flex items-center justify-between px-1">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
-          onClick={() => previousMonth && goToMonth(previousMonth)}
-          disabled={!previousMonth || disabled}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <div className="text-sm font-medium">
-          {format(currentMonth, 'MMMM yyyy')}
-        </div>
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
-          onClick={() => nextMonth && goToMonth(nextMonth)}
-          disabled={!nextMonth || disabled}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-    );
+  // Function to navigate to next month
+  const handleNextMonthClick = (currentMonth: Date) => {
+    const dayPicker = calendarRef.current?.querySelector(
+      '.rdp'
+    ) as DayPickerWithShowMonth | null;
+
+    if (dayPicker && dayPicker.showMonth) {
+      const nextMonth = new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth() + 1,
+        1
+      );
+      dayPicker.showMonth(nextMonth);
+    }
+  };
+
+  // Function to navigate to previous month
+  const handlePrevMonthClick = (currentMonth: Date) => {
+    const dayPicker = calendarRef.current?.querySelector(
+      '.rdp'
+    ) as DayPickerWithShowMonth | null;
+
+    if (dayPicker && dayPicker.showMonth) {
+      const prevMonth = new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth() - 1,
+        1
+      );
+      dayPicker.showMonth(prevMonth);
+    }
   };
 
   return (
@@ -124,39 +117,32 @@ export const DatePicker = ({
               setIsOpen(false);
             }}
             disabled={disabled}
-            components={{
-              Caption: ({ displayMonth }) => (
-                <CustomNavigation
-                  currentMonth={displayMonth}
-                  goToMonth={date => {
-                    const dayPicker = calendarRef.current?.querySelector(
-                      '.rdp'
-                    ) as DayPickerWithShowMonth | null;
-
-                    if (dayPicker && dayPicker.showMonth) {
-                      dayPicker.showMonth(date);
-                    }
-                  }}
-                  nextMonth={
-                    new Date(
-                      displayMonth.getFullYear(),
-                      displayMonth.getMonth() + 1,
-                      1
-                    )
-                  }
-                  previousMonth={
-                    new Date(
-                      displayMonth.getFullYear(),
-                      displayMonth.getMonth() - 1,
-                      1
-                    )
-                  }
-                />
-              ),
+            captionLayout="dropdown"
+            showOutsideDays
+            fixedWeeks
+            navProps={{
+              className: 'flex items-center justify-between p-1',
+              prevButtonProps: {
+                className:
+                  'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+                children: <ChevronLeft className="h-4 w-4" />,
+                disabled: disabled,
+              },
+              nextButtonProps: {
+                className:
+                  'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
+                children: <ChevronRight className="h-4 w-4" />,
+                disabled: disabled,
+              },
             }}
             classNames={{
               months: 'flex flex-col space-y-4',
               month: 'space-y-4',
+              caption: 'flex justify-center pt-1 relative items-center',
+              caption_label: 'text-sm font-medium',
+              nav: 'space-x-1 flex items-center',
+              nav_button:
+                'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100',
               table: 'w-full border-collapse space-y-1',
               head_row: 'flex',
               head_cell:
@@ -172,9 +158,6 @@ export const DatePicker = ({
               day_hidden: 'invisible',
               button_reset: 'button_reset',
               vhidden: 'sr-only',
-            }}
-            styles={{
-              caption: { display: 'flex', margin: '0' },
             }}
           />
         </div>
