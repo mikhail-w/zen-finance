@@ -13,7 +13,16 @@ type Props = {
   onChange: (columnIndex: number, value: string | null) => void;
 };
 
-const options = ['amount', 'payee', 'date'];
+// Expanded options based on common transaction fields
+const options = [
+  { value: 'amount', label: 'Amount' },
+  { value: 'date', label: 'Date' },
+  { value: 'payee', label: 'Description/Payee' },
+  { value: 'category', label: 'Category' },
+  { value: 'note', label: 'Note' },
+  { value: 'reference', label: 'Reference' },
+];
+
 export const TableHeadSelect = ({
   columnIndex,
   selectedColumns,
@@ -24,7 +33,9 @@ export const TableHeadSelect = ({
   return (
     <Select
       value={currentSelection || ''}
-      onValueChange={value => onChange(columnIndex, value)}
+      onValueChange={value =>
+        onChange(columnIndex, value === 'skip' ? null : value)
+      }
     >
       <SelectTrigger
         className={cn(
@@ -36,18 +47,19 @@ export const TableHeadSelect = ({
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="skip">Skip</SelectItem>
-        {options.map((option, index) => {
+        {options.map(option => {
           const disabled =
-            Object.values(selectedColumns).includes(option) &&
-            selectedColumns[`column_${columnIndex}`] !== option;
+            Object.values(selectedColumns).includes(option.value) &&
+            selectedColumns[`column_${columnIndex}`] !== option.value;
+
           return (
             <SelectItem
-              key={index}
-              value={option}
+              key={option.value}
+              value={option.value}
               disabled={disabled}
               className="capitalize"
             >
-              {option}
+              {option.label}
             </SelectItem>
           );
         })}
