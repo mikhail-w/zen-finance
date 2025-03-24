@@ -106,7 +106,7 @@ const DashNavigation = () => {
 
   return (
     <nav
-      className={`hidden md:flex items-center gap-x-2 overflow-x-auto font-semibold ${getFontSizeClass()} ml-10`}
+      className={`hidden md:flex items-center gap-x-2 overflow-x-auto font-semibold ${getFontSizeClass()} ml-10 `}
     >
       {routes.map(route => (
         <DashNavButton

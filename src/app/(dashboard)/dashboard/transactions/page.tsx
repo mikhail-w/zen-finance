@@ -1,5 +1,5 @@
 'use client';
-import React, { Suspense } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
@@ -9,77 +9,103 @@ import { DataTable } from '@/components/ui/data-table';
 import { useGetTransactions } from '@/features/transactions/api/use-get-transactions';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBulkDeleteTransactions } from '@/features/transactions/api/use-bulk-delete-transactions';
+import { UploadButton } from './upload-button';
+import { ImportCard } from './import-card';
 
-// Loading component for Suspense fallback
-const TransactionsLoading = () => (
-  <div className="max-w-screen-md mx-auto w-full pb-10 -mt-24">
-    <Card className="border-none drop-shadow-sm">
-      <CardHeader>
-        <Skeleton className="h-8 w-48" />
-      </CardHeader>
-      <CardContent>
-        <div className="h-[500px] w-full flex items-center justify-center">
-          <Loader2 className="size-6 text-slate-300 animate-spin" />
-        </div>
-      </CardContent>
-    </Card>
-  </div>
-);
+enum VARIANTS {
+  LIST = 'LIST',
+  IMPORT = 'IMPORT',
+}
 
-// The main transactions content component
-// This will be wrapped in Suspense since it uses hooks that depend on useSearchParams()
-const TransactionsContent = () => {
+const INITIAL_IMPORT_RESULTS = {
+  data: [],
+  errors: [],
+  meta: {},
+};
+
+const TransactionsPage = () => {
+  const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
+  const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
+
+  const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
+    console.log({ results });
+    setImportResults(results);
+    setVariant(VARIANTS.IMPORT);
+  };
+
+  const onCancelImport = () => {
+    setImportResults(INITIAL_IMPORT_RESULTS);
+    setVariant(VARIANTS.LIST);
+  };
+
   const newTransaction = useNewTransaction();
   const deleteTransactions = useBulkDeleteTransactions();
-  const transactionsQuery = useGetTransactions(); // This uses useSearchParams() internally
+  const transactionsQuery = useGetTransactions();
   const transactions = transactionsQuery.data || [];
 
   const isDisabled =
     transactionsQuery.isLoading || deleteTransactions.isPending;
 
   if (transactionsQuery.isLoading) {
-    return <TransactionsLoading />;
+    return (
+      <div className="w-full pb-10 -mt-24">
+        <Card className="border-none drop-shadow-sm w-full">
+          <CardHeader>
+            <Skeleton className="h-8 w-48" />
+          </CardHeader>
+          <CardContent>
+            <div className="h-[500px] w-full flex items-center justify-center">
+              <Loader2 className="size-6 text-slate-300 animate-spin" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
-
+  if (variant === VARIANTS.IMPORT) {
+    return (
+      <>
+        <ImportCard
+          data={importResults.data}
+          onCancel={onCancelImport}
+          onSubmit={() => {}}
+        />
+      </>
+    );
+  }
   return (
-    <div className="max-w-screen-md mx-auto w-full pb-10 -mt-24">
-      <Card className="border-none drop-shadow-sm">
+    <div className="w-full pb-10 -mt-24">
+      <Card className="border-none drop-shadow-sm w-full">
         <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
           <CardTitle className="text-3xl line-clamp-1">
             Transaction History
           </CardTitle>
-          <Button
-            className="text-white text-lg font-medium w-auto"
-            size={'sm'}
-            onClick={newTransaction.onOpen}
-          >
-            <Plus size={24} className="mr-2" />
-            Add New
-          </Button>
+          <div className="flex flex-col lg:flex-row gap-y-2 items-center gap-x-2">
+            <Button
+              onClick={newTransaction.onOpen}
+              size="sm"
+              className="w-full lg:w-auto"
+            >
+              <Plus className="size-4 mr-2" />
+              Add new
+            </Button>
+            <UploadButton onUpload={onUpload} />
+          </div>
         </CardHeader>
         <CardContent>
           <DataTable
-            disabled={isDisabled}
+            filterKey="payee"
+            columns={columns}
+            data={transactions}
             onDelete={row => {
               const ids = row.map(r => r.original.id);
               deleteTransactions.mutate({ ids });
             }}
-            filterKey="payee"
-            columns={columns}
-            data={transactions}
+            disabled={isDisabled}
           />
         </CardContent>
       </Card>
     </div>
-  );
-};
-
-// Main page component that wraps the content in a Suspense boundary
-const TransactionsPage = () => {
-  return (
-    <Suspense fallback={<TransactionsLoading />}>
-      <TransactionsContent />
-    </Suspense>
   );
 };
 
