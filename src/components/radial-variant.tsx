@@ -3,7 +3,6 @@ import {
   Legend,
   RadialBarChart,
   ResponsiveContainer,
-  Tooltip,
 } from 'recharts';
 
 import { formatCurrency } from '@/lib/utils';
@@ -18,6 +17,10 @@ type Props = {
 };
 
 export const RadialVariant = ({ data }: Props) => {
+  if (!data) {
+    return null;
+  }
+
   return (
     <ResponsiveContainer width="100%" height={350}>
       <RadialBarChart
@@ -26,7 +29,7 @@ export const RadialVariant = ({ data }: Props) => {
         barSize={10}
         innerRadius="90%"
         outerRadius="40%"
-        data={data?.map((item, index) => ({
+        data={data.map((item, index) => ({
           ...item,
           fill: COLORS[index % COLORS.length],
         }))}
@@ -45,24 +48,26 @@ export const RadialVariant = ({ data }: Props) => {
           verticalAlign="bottom"
           align="right"
           iconType="circle"
-          content={({ payload }: any) => {
+          content={({ payload }) => {
+            if (!payload) return null;
+
             return (
               <ul className="flex flex-col space-y-2">
-                {payload.map((entry: any, index: number) => (
+                {payload.map((entry, index) => (
                   <li
                     key={`item-${index}`}
                     className="flex items-center space-x-2"
                   >
                     <span
                       className="size-2 rounded-full"
-                      style={{ backgroundColor: entry.color }}
+                      style={{ backgroundColor: entry.color || '#000' }}
                     />
                     <div className="space-x-1">
                       <span className="text-sm text-muted-foreground">
                         {entry.value}
                       </span>
                       <span className="text-sm">
-                        {formatCurrency(entry.payload.value)}
+                        {formatCurrency(entry.payload?.value || 0)}
                       </span>
                     </div>
                   </li>
