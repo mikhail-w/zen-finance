@@ -175,7 +175,7 @@ export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
       // Debug log the raw data before processing
       console.log('Raw valid data before processing:', validData);
 
-      const formattedData = validData
+      const formattedData: ImportedTransaction[] = validData
         .map((item, index) => {
           try {
             // Parse amount
@@ -216,18 +216,22 @@ export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
               miliunits,
             });
 
-            return {
+            // Ensure we're creating an object that matches the ImportedTransaction interface
+            const transaction: ImportedTransaction = {
               ...item,
               amount: miliunits,
               date: formattedDate,
+              payee: item.payee,
             };
+
+            return transaction;
           } catch (err) {
             console.error(`Error processing row ${index}:`, item, err);
             // Continue with other rows
             return null;
           }
         })
-        .filter((item): item is NonNullable<typeof item> => Boolean(item));
+        .filter((item): item is ImportedTransaction => item !== null);
 
       if (formattedData.length === 0) {
         toast.error(
