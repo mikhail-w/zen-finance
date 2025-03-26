@@ -15,13 +15,30 @@ import { ImportCard } from './import-card';
 import { useSelectAccount } from '@/features/accounts/hooks/use-select-account';
 import { toast } from 'sonner';
 import { useBulkCreateTransactions } from '@/features/transactions/api/use-bulk-create-transactions';
+import { ParseResult, ParseError } from 'papaparse';
 
 enum VARIANTS {
   LIST = 'LIST',
   IMPORT = 'IMPORT',
 }
 
-const INITIAL_IMPORT_RESULTS = {
+// Define types for the import results
+interface ImportMetadata {
+  delimiter?: string;
+  linebreak?: string;
+  aborted?: boolean;
+  truncated?: boolean;
+  cursor?: number;
+  fields?: string[];
+}
+
+interface ImportResultsType {
+  data: string[][];
+  errors: ParseError[];
+  meta: ImportMetadata;
+}
+
+const INITIAL_IMPORT_RESULTS: ImportResultsType = {
   data: [],
   errors: [],
   meta: {},
@@ -38,11 +55,18 @@ interface ImportedTransaction {
 const TransactionsPage = () => {
   const [AccountDialog, confirm] = useSelectAccount();
   const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
-  const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
+  const [importResults, setImportResults] = useState<ImportResultsType>(
+    INITIAL_IMPORT_RESULTS
+  );
 
-  const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
+  // Updated to accept the ParseResult type from PapaParse
+  const onUpload = (results: ParseResult<string[]>) => {
     console.log({ results });
-    setImportResults(results);
+    setImportResults({
+      data: results.data,
+      errors: results.errors,
+      meta: results.meta,
+    });
     setVariant(VARIANTS.IMPORT);
   };
 
