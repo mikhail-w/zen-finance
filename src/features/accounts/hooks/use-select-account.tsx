@@ -12,9 +12,6 @@ import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { useCreateAccount } from '@/features/accounts/api/use-create-account';
 import { Select } from '@/components/select';
 
-// Remove the problematic JSXStyle import
-// import JSXStyle from 'styled-jsx/style';
-
 export const useSelectAccount = (): [
   () => JSX.Element,
   () => Promise<boolean>
@@ -30,9 +27,10 @@ export const useSelectAccount = (): [
     value: account.id,
   }));
   const [promise, setPromise] = useState<{
-    resolve: (value: string | undefined) => void;
+    resolve: (value: boolean) => void;
   } | null>(null);
-  const selectValue = useRef<string>();
+  // Add initial value to useRef
+  const selectValue = useRef<string | undefined>(undefined);
 
   const confirm = () =>
     new Promise<boolean>(resolve => {
@@ -44,12 +42,14 @@ export const useSelectAccount = (): [
   };
 
   const handleConfirm = () => {
-    promise?.resolve(selectValue.current);
+    // Resolve with true if a value was selected
+    promise?.resolve(!!selectValue.current);
     handleClose();
   };
 
   const handleCancel = () => {
-    promise?.resolve(undefined);
+    // Resolve with false when canceled
+    promise?.resolve(false);
     handleClose();
   };
 
