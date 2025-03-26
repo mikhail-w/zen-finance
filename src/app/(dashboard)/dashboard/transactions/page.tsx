@@ -27,6 +27,14 @@ const INITIAL_IMPORT_RESULTS = {
   meta: {},
 };
 
+// Define the ImportedTransaction interface to match what ImportCard returns
+interface ImportedTransaction {
+  amount: number;
+  date: string;
+  payee: string;
+  [key: string]: string | number;
+}
+
 const TransactionsPage = () => {
   const [AccountDialog, confirm] = useSelectAccount();
   const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
@@ -52,27 +60,32 @@ const TransactionsPage = () => {
   const isDisabled =
     transactionsQuery.isLoading || deleteTransactions.isPending;
 
-  const onSubmitImport = async (
-    values: (typeof transactionSchema.$inferInsert)[]
-  ) => {
-    const accountId = await confirm();
+  // Updated to match the ImportedTransaction interface
+  const onSubmitImport = async (values: ImportedTransaction[]) => {
+    try {
+      const accountId = await confirm();
 
-    // Fixed the type checking to properly handle the accountId
-    if (!accountId || typeof accountId !== 'string') {
-      return toast.error('Please select an account to continue.');
+      if (!accountId || typeof accountId !== 'string') {
+        return toast.error('Please select an account to continue.');
+      }
+
+      // Transform the data to match the schema
+      const data = values.map(value => ({
+        ...value,
+        accountId,
+      }));
+
+      createTransactions.mutate(data, {
+        onSuccess: () => {
+          onCancelImport();
+        },
+      });
+    } catch (error) {
+      console.error('Error in import submission:', error);
+      toast.error('An error occurred while importing transactions.');
     }
-
-    const data = values.map(value => ({
-      ...value,
-      accountId: accountId, // No need for explicit casting now
-    }));
-
-    createTransactions.mutate(data, {
-      onSuccess: () => {
-        onCancelImport();
-      },
-    });
   };
+
   if (transactionsQuery.isLoading) {
     return (
       <div className="w-full pb-10 -mt-24">
@@ -89,6 +102,7 @@ const TransactionsPage = () => {
       </div>
     );
   }
+
   if (variant === VARIANTS.IMPORT) {
     return (
       <>
@@ -101,6 +115,7 @@ const TransactionsPage = () => {
       </>
     );
   }
+
   return (
     <div className="w-full pb-10 -mt-24">
       <Card className="border-none drop-shadow-sm">
