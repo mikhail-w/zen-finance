@@ -5,7 +5,12 @@ import {
   PieChart,
   ResponsiveContainer,
   Tooltip,
+  TooltipProps,
 } from 'recharts';
+import {
+  NameType,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent';
 
 import { formatPercentage } from '@/lib/utils';
 import { CategoryTooltip } from '@/components/category-tooltip';
@@ -15,6 +20,17 @@ type PieData = {
   name: string;
   value: number;
 };
+
+// Define a custom type for CategoryTooltip's expected payload format
+interface CategoryTooltipPayloadItem {
+  payload: { name: string };
+  value: number;
+}
+
+interface CategoryTooltipProps {
+  active: boolean;
+  payload: CategoryTooltipPayloadItem[];
+}
 
 const COLORS = ['#0062FF', '#12C6FF', '#FF647F', '#FF9354'];
 
@@ -41,21 +57,27 @@ export const PieVariant = ({ data }: Props) => {
   };
 
   // Custom tooltip renderer that formats the data to match what CategoryTooltip expects
-  const renderCategoryTooltip = (props: any) => {
+  const renderCategoryTooltip = (
+    props: TooltipProps<ValueType, NameType>
+  ): React.ReactNode => {
     if (!props.active || !props.payload || props.payload.length === 0) {
       return null;
     }
 
     // Transform the payload into the format expected by CategoryTooltip
-    const formattedPayload = props.payload.map((entry: any) => ({
-      payload: { name: entry.name },
-      value: entry.value,
-    }));
+    const formattedPayload: CategoryTooltipPayloadItem[] = props.payload.map(
+      entry => ({
+        payload: { name: entry.name as string },
+        value: entry.value as number,
+      })
+    );
 
-    return CategoryTooltip({
-      payload: formattedPayload,
+    const categoryTooltipProps: CategoryTooltipProps = {
       active: true,
-    });
+      payload: formattedPayload,
+    };
+
+    return CategoryTooltip(categoryTooltipProps);
   };
 
   return (
