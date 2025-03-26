@@ -5,25 +5,58 @@ import {
   PieChart,
   ResponsiveContainer,
   Tooltip,
-  Payload,
 } from 'recharts';
 
 import { formatPercentage } from '@/lib/utils';
 import { CategoryTooltip } from '@/components/category-tooltip';
 
+// Define proper typing for our data
+type PieData = {
+  name: string;
+  value: number;
+};
+
 const COLORS = ['#0062FF', '#12C6FF', '#FF647F', '#FF9354'];
 
 type Props = {
-  data?: {
-    name: string;
-    value: number;
-  }[];
+  data?: PieData[];
 };
 
 export const PieVariant = ({ data }: Props) => {
   if (!data) {
     return null;
   }
+
+  // Type-safe function to get percentage
+  const getPercentage = (payload: unknown): number => {
+    if (
+      payload &&
+      typeof payload === 'object' &&
+      'percent' in payload &&
+      typeof payload.percent === 'number'
+    ) {
+      return payload.percent * 100;
+    }
+    return 0;
+  };
+
+  // Custom tooltip renderer that formats the data to match what CategoryTooltip expects
+  const renderCategoryTooltip = (props: any) => {
+    if (!props.active || !props.payload || props.payload.length === 0) {
+      return null;
+    }
+
+    // Transform the payload into the format expected by CategoryTooltip
+    const formattedPayload = props.payload.map((entry: any) => ({
+      payload: { name: entry.name },
+      value: entry.value,
+    }));
+
+    return CategoryTooltip({
+      payload: formattedPayload,
+      active: true,
+    });
+  };
 
   return (
     <ResponsiveContainer width="100%" height={350}>
@@ -52,11 +85,7 @@ export const PieVariant = ({ data }: Props) => {
                         {entry.value}
                       </span>
                       <span className="text-sm">
-                        {formatPercentage(
-                          entry.payload?.percent
-                            ? entry.payload.percent * 100
-                            : 0
-                        )}
+                        {formatPercentage(getPercentage(entry.payload))}
                       </span>
                     </div>
                   </li>
@@ -65,7 +94,7 @@ export const PieVariant = ({ data }: Props) => {
             );
           }}
         />
-        <Tooltip content={CategoryTooltip} />
+        <Tooltip content={renderCategoryTooltip} />
         <Pie
           data={data}
           cx="50%"
