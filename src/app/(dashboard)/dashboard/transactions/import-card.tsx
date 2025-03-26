@@ -14,6 +14,13 @@ const DATE_FORMATS = [
   'yyyy-MM-dd HH:mm:ss', // Full ISO format
 ];
 
+interface ImportedTransaction {
+  amount: number;
+  date: string;
+  payee: string;
+  [key: string]: string | number;
+}
+
 // API expected format
 const outputFormat = 'yyyy-MM-dd';
 
@@ -43,7 +50,7 @@ interface RowData {
 type Props = {
   data: string[][];
   onCancel: () => void;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: ImportedTransaction[]) => void;
 };
 
 export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
@@ -220,7 +227,7 @@ export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
             return null;
           }
         })
-        .filter(Boolean as any); // Remove any null entries from failed processing
+        .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
       if (formattedData.length === 0) {
         toast.error(

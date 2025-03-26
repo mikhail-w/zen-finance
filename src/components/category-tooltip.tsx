@@ -1,8 +1,17 @@
 import { format } from 'date-fns';
 import { formatCurrency } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+interface TooltipProps {
+  active: boolean;
+  payload: Array<{
+    payload: {
+      name: string;
+    };
+    value: number;
+  }>;
+}
 
-export const CategoryTooltip = ({ active, payload }: any) => {
+export const CategoryTooltip = ({ active, payload }: TooltipProps) => {
   if (!active) return null;
 
   const name = payload[0].payload.name;

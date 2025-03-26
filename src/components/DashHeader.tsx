@@ -4,6 +4,7 @@ import DashNavigation from './DashNavigation';
 import DashWelcomMsg from './DashWelcomeMsg';
 import { UserButton, ClerkLoading, ClerkLoaded } from '@clerk/nextjs';
 import { Loader2 } from 'lucide-react';
+import { Filters } from '@/components/filters';
 
 const DashHeader = () => {
   return (
@@ -29,6 +30,7 @@ const DashHeader = () => {
           </ClerkLoading>
         </div>
         <DashWelcomMsg />
+        <Filters />
       </div>
     </header>
   );
