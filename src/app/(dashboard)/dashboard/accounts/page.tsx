@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
@@ -10,7 +10,24 @@ import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBulkDeleteAccounts } from '@/features/accounts/api/use-bulk-delete-accounts';
 
-const AccountsPage = () => {
+// Loading component to display while data is being fetched
+const AccountsLoading = () => (
+  <div className="w-full pb-10 -mt-24">
+    <Card className="border-none drop-shadow-sm">
+      <CardHeader>
+        <Skeleton className="h-8 w-48" />
+      </CardHeader>
+      <CardContent>
+        <div className="h-[500px] w-full flex items-center justify-center">
+          <Loader2 className="size-6 text-slate-300 animate-spin" />
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+);
+
+// Main content component
+const AccountsContent = () => {
   const newAccount = useNewAccount();
   const deleteAccounts = useBulkDeleteAccounts();
   const accountsQuery = useGetAccounts();
@@ -19,20 +36,7 @@ const AccountsPage = () => {
   const isDisabled = accountsQuery.isLoading || deleteAccounts.isPending;
 
   if (accountsQuery.isLoading) {
-    return (
-      <div className="w-full pb-10 -mt-24">
-        <Card className="border-none drop-shadow-sm">
-          <CardHeader>
-            <Skeleton className="h-8 w-48" />
-          </CardHeader>
-          <CardContent>
-            <div className="h-[500px] w-full flex items-center justify-center">
-              <Loader2 className="size-6 text-slate-300 animate-spin" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <AccountsLoading />;
   }
 
   return (
@@ -66,4 +70,11 @@ const AccountsPage = () => {
   );
 };
 
-export default AccountsPage;
+// Main page component with Suspense boundary
+export default function AccountsPage() {
+  return (
+    <Suspense fallback={<AccountsLoading />}>
+      <AccountsContent />
+    </Suspense>
+  );
+}
