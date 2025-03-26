@@ -149,7 +149,7 @@ export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
       const arrayOfData: RowData[] = mappedData.body.map(row => {
         return row.reduce<RowData>((acc, cell, index) => {
           const header = mappedData.headers[index];
-          if (header !== null) {
+          if (header !== null && cell !== null) {
             acc[header] = cell;
           }
           return acc;
