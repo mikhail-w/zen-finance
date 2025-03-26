@@ -60,7 +60,7 @@ const TransactionsPage = () => {
   const isDisabled =
     transactionsQuery.isLoading || deleteTransactions.isPending;
 
-  // Updated to match the ImportedTransaction interface
+  // Updated to match the ImportedTransaction interface and convert data types
   const onSubmitImport = async (values: ImportedTransaction[]) => {
     try {
       const accountId = await confirm();
@@ -69,11 +69,18 @@ const TransactionsPage = () => {
         return toast.error('Please select an account to continue.');
       }
 
-      // Transform the data to match the schema
-      const data = values.map(value => ({
-        ...value,
-        accountId,
-      }));
+      // Transform the data to match the schema, converting string dates to Date objects
+      const data = values.map(value => {
+        // Create a new object with the correct types
+        return {
+          accountId,
+          amount: value.amount,
+          date: new Date(value.date), // Convert string date to Date object
+          payee: value.payee,
+          // Include any other properties you need from value
+          // Make sure to handle any type conversions as needed
+        };
+      });
 
       createTransactions.mutate(data, {
         onSuccess: () => {
