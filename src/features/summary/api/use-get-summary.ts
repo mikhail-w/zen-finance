@@ -31,7 +31,7 @@ export const useGetSummary = () => {
       return {
         ...data,
         incomeAmount: convertAmountFromMiliunits(data.incomeAmount),
-        expenseAmount: convertAmountFromMiliunits(data.expensesAmount),
+        expensesAmount: convertAmountFromMiliunits(data.expensesAmount), // Fixed property name to match DataCard
         remainingAmount: convertAmountFromMiliunits(data.remainingAmount),
         categories: data.categories.map(category => ({
           ...category,
