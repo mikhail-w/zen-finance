@@ -1,15 +1,16 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 import { DataTable } from '@/components/ui/data-table';
 import { ColumnDef, Row } from '@tanstack/react-table';
+import { SearchParamsWrapper } from '@/components/search-params-wrapper';
 
 type DataTableClientWrapperProps<TData, TValue> = {
   data: TData[];
   columns: ColumnDef<TData, TValue>[];
   filterKey: string;
   disabled?: boolean;
-  onDelete: (rows: Row<TData>[]) => void; // Remove the optional '?' mark to make it required
+  onDelete: (rows: Row<TData>[]) => void;
 };
 
 export function DataTableClientWrapper<TData, TValue>({
@@ -20,12 +21,19 @@ export function DataTableClientWrapper<TData, TValue>({
   onDelete,
 }: DataTableClientWrapperProps<TData, TValue>) {
   return (
-    <DataTable
-      data={data}
-      columns={columns}
-      filterKey={filterKey}
-      disabled={disabled}
-      onDelete={onDelete}
-    />
+    <Suspense fallback={<div>Loading table...</div>}>
+      <SearchParamsWrapper>
+        {({ searchParams }) => (
+          <DataTable
+            data={data}
+            columns={columns}
+            filterKey={filterKey}
+            disabled={disabled}
+            onDelete={onDelete}
+            searchParams={searchParams}
+          />
+        )}
+      </SearchParamsWrapper>
+    </Suspense>
   );
 }

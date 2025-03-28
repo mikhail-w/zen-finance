@@ -5,7 +5,8 @@ import { format, subDays, parse, isValid } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { ChevronDown } from 'lucide-react';
 import qs from 'query-string';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import { Suspense } from 'react';
 
 import { cn, formatDateRange } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -17,10 +18,14 @@ import {
   PopoverClose,
 } from '@/components/ui/popover';
 
-export const DateFilter = () => {
+// Create a client component that uses useSearchParams
+const DateFilterContent = () => {
   const router = useRouter();
   const pathname = usePathname();
+  // Move this import to the client component
+  const { useSearchParams } = require('next/navigation');
   const params = useSearchParams();
+
   const accountId = params.get('accountId');
   const fromParam = params.get('from') || '';
   const toParam = params.get('to') || '';
@@ -142,5 +147,25 @@ export const DateFilter = () => {
         </div>
       </PopoverContent>
     </Popover>
+  );
+};
+
+// Create a wrapper component that uses Suspense
+export const DateFilter = () => {
+  return (
+    <Suspense
+      fallback={
+        <Button
+          size="sm"
+          variant="outline"
+          className="lg:w-auto w-full h-9 rounded-md px-3 font-normal bg-white/10 hover:bg-white/20 hover:text-white border-none focus:ring-offset-0 focus:ring-transparent outline-none text-white focus:bg-white/30 transition"
+        >
+          Loading...
+          <ChevronDown className="ml-2 size-4 opacity-50" />
+        </Button>
+      }
+    >
+      <DateFilterContent />
+    </Suspense>
   );
 };
