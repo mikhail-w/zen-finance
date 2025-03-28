@@ -5,7 +5,7 @@ import { format, subDays, parse, isValid } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { ChevronDown } from 'lucide-react';
 import qs from 'query-string';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
 import { cn, formatDateRange } from '@/lib/utils';
@@ -22,8 +22,6 @@ import {
 const DateFilterContent = () => {
   const router = useRouter();
   const pathname = usePathname();
-  // Move this import to the client component
-  const { useSearchParams } = require('next/navigation');
   const params = useSearchParams();
 
   const accountId = params.get('accountId');
@@ -32,6 +30,9 @@ const DateFilterContent = () => {
 
   const defaultTo = new Date();
   const defaultFrom = subDays(defaultTo, 30);
+
+  // Rest of your existing component code...
+  // (Same as in your original component)
 
   // Parse date from string, with graceful fallback
   const parseDate = (dateStr: string, fallback: Date): Date => {
