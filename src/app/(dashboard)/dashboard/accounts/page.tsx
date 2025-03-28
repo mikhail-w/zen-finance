@@ -1,3 +1,5 @@
+'use client';
+
 import { Suspense } from 'react';
 import { ClientAccountsPage, AccountsLoading } from './client-accounts-page';
 import { NewAccountSheet } from '@/features/accounts/components/new-account-sheet';

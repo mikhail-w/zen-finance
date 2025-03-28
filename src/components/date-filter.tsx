@@ -7,7 +7,7 @@ import { ChevronDown } from 'lucide-react';
 
 // Import the SearchParamsWrapper
 import { SearchParamsWrapper } from '@/components/search-params-wrapper';
-import { DateFilterClient } from './date-filter-client';
+import { DateFilterClient } from '@/components/date-filter-client';
 
 // Loading fallback component
 const DateFilterFallback = () => (

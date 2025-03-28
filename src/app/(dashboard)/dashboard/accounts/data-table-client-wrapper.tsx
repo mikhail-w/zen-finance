@@ -21,12 +21,9 @@ export function DataTableClientWrapper<TData, TValue>({
   onDelete,
 }: DataTableClientWrapperProps<TData, TValue>) {
   return (
-    <SearchParamsWrapper>
-      {({ searchParams }) => {
-        // You can use searchParams here if needed
-        // but don't pass it down if DataTable doesn't accept it
-
-        return (
+    <Suspense fallback={<div>Loading table parameters...</div>}>
+      <SearchParamsWrapper>
+        {({ searchParams }) => (
           <DataTable
             data={data}
             columns={columns}
@@ -34,8 +31,8 @@ export function DataTableClientWrapper<TData, TValue>({
             disabled={disabled}
             onDelete={onDelete}
           />
-        );
-      }}
-    </SearchParamsWrapper>
+        )}
+      </SearchParamsWrapper>
+    </Suspense>
   );
 }
