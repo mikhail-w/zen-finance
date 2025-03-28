@@ -24,7 +24,7 @@ export function DataTableClientWrapper<TData, TValue>({
     <SearchParamsWrapper>
       {({ searchParams }) => {
         // You can use searchParams here if needed
-        // For example, to filter data or set initial state
+        // but don't pass it down if DataTable doesn't accept it
 
         return (
           <DataTable
@@ -33,7 +33,6 @@ export function DataTableClientWrapper<TData, TValue>({
             filterKey={filterKey}
             disabled={disabled}
             onDelete={onDelete}
-            // Don't pass searchParams since it's not in the props interface
           />
         );
       }}

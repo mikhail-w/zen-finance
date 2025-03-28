@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
@@ -10,6 +10,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { useBulkDeleteAccounts } from '@/features/accounts/api/use-bulk-delete-accounts';
 import { DataTableClientWrapper } from './data-table-client-wrapper';
+
+// Loading component for data table
+const DataTableLoading = () => (
+  <div className="h-[500px] w-full flex items-center justify-center">
+    <Loader2 className="size-6 text-slate-300 animate-spin" />
+  </div>
+);
 
 // Loading component to display while data is being fetched
 export const AccountsLoading = () => (
@@ -54,16 +61,18 @@ export function ClientAccountsPage() {
           </Button>
         </CardHeader>
         <CardContent>
-          <DataTableClientWrapper
-            disabled={isDisabled}
-            onDelete={row => {
-              const ids = row.map(r => r.original.id);
-              deleteAccounts.mutate({ ids });
-            }}
-            filterKey="name"
-            columns={columns}
-            data={accounts}
-          />
+          <Suspense fallback={<DataTableLoading />}>
+            <DataTableClientWrapper
+              disabled={isDisabled}
+              onDelete={row => {
+                const ids = row.map(r => r.original.id);
+                deleteAccounts.mutate({ ids });
+              }}
+              filterKey="name"
+              columns={columns}
+              data={accounts}
+            />
+          </Suspense>
         </CardContent>
       </Card>
     </div>
