@@ -7,8 +7,44 @@ export default function Features() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [activeFeatures, setActiveFeatures] = useState<string[]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState({
+    digital: false,
+    grow: false,
+    card: false,
+  });
+
+  // Modified preload function that works with Next.js
+  const preloadImages = () => {
+    // Using fetch instead of Image constructor to avoid Next.js module issues
+    const checkImageExists = async (path: string) => {
+      try {
+        const response = await fetch(path);
+        if (response.ok) {
+          if (path.includes('digital')) {
+            setImagesLoaded(prev => ({ ...prev, digital: true }));
+          } else if (path.includes('grow')) {
+            setImagesLoaded(prev => ({ ...prev, grow: true }));
+          } else if (path.includes('card')) {
+            setImagesLoaded(prev => ({ ...prev, card: true }));
+          }
+        } else {
+          console.error(`Failed to load image ${path}: ${response.status}`);
+        }
+      } catch (error) {
+        console.error(`Error fetching image ${path}:`, error);
+      }
+    };
+
+    // Check each image
+    checkImageExists('/img/digital.svg');
+    checkImageExists('/img/grow.svg');
+    checkImageExists('/img/card.svg');
+  };
 
   useEffect(() => {
+    // Start preloading images immediately
+    preloadImages();
+
     // Observer for section entrance animation
     const sectionObserver = new IntersectionObserver(
       entries => {
@@ -58,6 +94,15 @@ export default function Features() {
     };
   }, [activeFeatures]);
 
+  // Function to handle image load errors
+  const handleImageError =
+    (imageName: string) =>
+    (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+      console.error(`Failed to load ${imageName} image:`, e);
+      // Set a fallback image if needed
+      e.currentTarget.src = '/img/fallback.svg';
+    };
+
   return (
     <section
       className={`max-w-[90%] mx-auto py-16 sm:py-20 md:py-24 lg:py-32 px-4 sm:px-6 border-t border-[#ddd] transition-all duration-1000 ${
@@ -94,13 +139,22 @@ export default function Features() {
                 : 'opacity-0 translate-y-8'
             }`}
           >
+            {/* Render placeholder while image is loading */}
+            {!imagesLoaded.digital && (
+              <div className="w-full h-[270px] bg-gray-100 animate-pulse rounded"></div>
+            )}
+
             <Image
               src="/img/digital.svg"
               alt="Digital banking interface"
               width={450}
               height={270}
               priority
-              className="w-full h-auto"
+              loading="eager"
+              onError={handleImageError('digital')}
+              className={`w-full h-auto ${
+                imagesLoaded.digital ? 'block' : 'hidden'
+              }`}
             />
           </div>
 
@@ -160,13 +214,22 @@ export default function Features() {
                 : 'opacity-0 translate-y-8'
             }`}
           >
+            {/* Render placeholder while image is loading */}
+            {!imagesLoaded.grow && (
+              <div className="w-full h-[270px] bg-gray-100 animate-pulse rounded"></div>
+            )}
+
             <Image
               src="/img/grow.svg"
               alt="Growing investments"
               width={450}
               height={270}
               priority
-              className="w-full h-auto"
+              loading="eager"
+              onError={handleImageError('grow')}
+              className={`w-full h-auto ${
+                imagesLoaded.grow ? 'block' : 'hidden'
+              }`}
             />
           </div>
         </div>
@@ -181,13 +244,22 @@ export default function Features() {
                 : 'opacity-0 translate-y-8'
             }`}
           >
+            {/* Render placeholder while image is loading */}
+            {!imagesLoaded.card && (
+              <div className="w-full h-[270px] bg-gray-100 animate-pulse rounded"></div>
+            )}
+
             <Image
               src="/img/card.svg"
               alt="Premium debit card"
               width={450}
               height={270}
               priority
-              className="w-full h-auto"
+              loading="eager"
+              onError={handleImageError('card')}
+              className={`w-full h-auto ${
+                imagesLoaded.card ? 'block' : 'hidden'
+              }`}
             />
           </div>
 
