@@ -16,3 +16,5 @@ export default function AccountsPage() {
     </>
   );
 }
+
+export const dynamic = 'force-dynamic';
