@@ -1,6 +1,6 @@
 'use client';
 
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { Loader2 } from 'lucide-react';
 import { NewTransactionSheet } from '@/features/transactions/components/new-transaction-sheet';
 import { EditTransactionSheet } from '@/features/transactions/components/edit-transaction-sheet';
@@ -13,7 +13,7 @@ const TransactionsLoading = () => (
 );
 
 // Use dynamic import with ssr: false for the simplified component
-const SimplifiedTransactionsPage = dynamic(
+const SimplifiedTransactionsPage = nextDynamic(
   () =>
     import('./simplified-transactions-page').then(
       mod => mod.SimplifiedTransactionsPage
@@ -34,4 +34,4 @@ export default function TransactionsPage() {
   );
 }
 
-export const dynamicConfig = 'force-dynamic';
+export const dynamic = 'force-dynamic';

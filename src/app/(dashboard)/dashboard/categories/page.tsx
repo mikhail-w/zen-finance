@@ -1,5 +1,5 @@
 'use client';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { Loader2 } from 'lucide-react';
 import { NewCategorySheet } from '@/features/categories/components/new-category-sheet';
 import { EditCategorySheet } from '@/features/categories/components/edit-category-sheet';
@@ -12,7 +12,7 @@ const CategoriesLoading = () => (
 );
 
 // Use dynamic import with ssr: false for the client component
-const ClientCategoriesPage = dynamic(
+const ClientCategoriesPage = nextDynamic(
   () => import('./client-categories-page').then(mod => mod.default),
   {
     ssr: false,
@@ -31,4 +31,4 @@ export default function CategoriesPage() {
 }
 
 // Rename to avoid conflict with the imported 'dynamic'
-export const dynamicConfig = 'force-dynamic';
+export const dynamic = 'force-dynamic';

@@ -1,5 +1,5 @@
 'use client';
-import dynamic from 'next/dynamic';
+import nextDynamic from 'next/dynamic';
 import { Loader2 } from 'lucide-react';
 import { NewAccountSheet } from '@/features/accounts/components/new-account-sheet';
 import { EditAccountSheet } from '@/features/accounts/components/edit-account-sheet';
@@ -12,7 +12,7 @@ const AccountsLoading = () => (
 );
 
 // Use dynamic import with ssr: false for the client component
-const ClientAccountsPage = dynamic(
+const ClientAccountsPage = nextDynamic(
   () => import('./client-accounts-page').then(mod => mod.ClientAccountsPage),
   {
     ssr: false,
@@ -30,4 +30,4 @@ export default function AccountsPage() {
   );
 }
 
-export const dynamicConfig = 'force-dynamic';
+export const dynamic = 'force-dynamic';
