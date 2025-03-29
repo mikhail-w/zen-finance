@@ -15,7 +15,7 @@ import { ImportCard } from './import-card';
 import { useSelectAccount } from '@/features/accounts/hooks/use-select-account';
 import { toast } from 'sonner';
 import { useBulkCreateTransactions } from '@/features/transactions/api/use-bulk-create-transactions';
-import { ParseResult } from 'papaparse';
+import { ParseResult, ParseError } from 'papaparse'; // Import ParseError
 import { ResponseType } from './columns';
 import { Row } from '@tanstack/react-table';
 import { SearchParamsWrapper } from '@/components/search-params-wrapper';
