@@ -5,12 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
 import { useNewAccount } from '@/features/accounts/hooks/use-new-account';
-import { columns } from './columns';
+import { columns, ResponseType } from './columns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { useBulkDeleteAccounts } from '@/features/accounts/api/use-bulk-delete-accounts';
 import { SearchParamsWrapper } from '@/components/search-params-wrapper';
 import { DataTable } from '@/components/ui/data-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 
 // Loading component for data table
 const DataTableLoading = () => (
@@ -35,8 +36,21 @@ export const AccountsLoading = () => (
   </div>
 );
 
+// Define interface for DataTableClientWrapper props
+interface DataTableClientWrapperProps<TData, TValue> {
+  data: TData[];
+  columns: ColumnDef<TData, TValue>[];
+  disabled?: boolean;
+  onDelete: (rows: Row<TData>[]) => void;
+}
+
 // Client component wrapper for DataTable to handle search params
-const DataTableClientWrapper = ({ data, columns, disabled, onDelete }) => {
+const DataTableClientWrapper = <TData, TValue>({
+  data,
+  columns,
+  disabled,
+  onDelete,
+}: DataTableClientWrapperProps<TData, TValue>) => {
   return (
     <Suspense fallback={<DataTableLoading />}>
       <SearchParamsWrapper>
@@ -81,10 +95,10 @@ export function ClientAccountsPage() {
           </Button>
         </CardHeader>
         <CardContent>
-          <DataTableClientWrapper
+          <DataTableClientWrapper<ResponseType, unknown>
             disabled={isDisabled}
-            onDelete={row => {
-              const ids = row.map(r => r.original.id);
+            onDelete={rows => {
+              const ids = rows.map(r => r.original.id);
               deleteAccounts.mutate({ ids });
             }}
             columns={columns}
