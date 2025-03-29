@@ -1,10 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // Skip build errors related to useSearchParams()
-    skipTrailingSlashRedirect: true,
-    skipMiddlewareUrlNormalize: true,
-  },
+  // These options have been moved out of experimental in Next.js 15.x
+  skipTrailingSlashRedirect: true,
+  skipMiddlewareUrlNormalize: true,
+
   // Force all pages to be dynamic by default
   reactStrictMode: false,
 };

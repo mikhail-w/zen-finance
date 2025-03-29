@@ -15,7 +15,7 @@ import { useSelectAccount } from '@/features/accounts/hooks/use-select-account';
 import { toast } from 'sonner';
 import { useBulkCreateTransactions } from '@/features/transactions/api/use-bulk-create-transactions';
 import { ParseResult, ParseError } from 'papaparse';
-import { DataTableClientWrapper } from '../accounts/data-table-client-wrapper';
+import { SearchParamsWrapper } from '@/components/search-params-wrapper';
 
 enum VARIANTS {
   LIST = 'LIST',
@@ -124,8 +124,6 @@ const TransactionsPage = () => {
           amount: value.amount,
           date: new Date(value.date), // Convert string date to Date object
           payee: value.payee,
-          // Include any other properties you need from value
-          // Make sure to handle any type conversions as needed
         };
       });
 
@@ -178,16 +176,20 @@ const TransactionsPage = () => {
         </CardHeader>
         <CardContent>
           <Suspense fallback={<TableLoading />}>
-            <DataTableClientWrapper
-              filterKey="payee"
-              columns={columns}
-              data={transactions}
-              onDelete={row => {
-                const ids = row.map(r => r.original.id);
-                deleteTransactions.mutate({ ids });
-              }}
-              disabled={isDisabled}
-            />
+            <SearchParamsWrapper>
+              {({ searchParams }) => (
+                <DataTable
+                  filterKey="payee"
+                  columns={columns}
+                  data={transactions}
+                  onDelete={row => {
+                    const ids = row.map(r => r.original.id);
+                    deleteTransactions.mutate({ ids });
+                  }}
+                  disabled={isDisabled}
+                />
+              )}
+            </SearchParamsWrapper>
           </Suspense>
         </CardContent>
       </Card>
