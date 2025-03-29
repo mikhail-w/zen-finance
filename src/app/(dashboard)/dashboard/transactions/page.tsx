@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { useBulkCreateTransactions } from '@/features/transactions/api/use-bulk-create-transactions';
 import { ParseResult, ParseError } from 'papaparse';
 import { ResponseType } from './columns';
+import { Row } from '@tanstack/react-table';
 
 enum VARIANTS {
   LIST = 'LIST',
@@ -75,28 +76,25 @@ const TableLoading = () => (
   </div>
 );
 
-// Define proper types for the TransactionsTable props
-interface TransactionsTableProps {
+// Define interface for the client wrapper component props
+interface ClientDataTableWrapperProps {
   transactions: ResponseType[];
   isDisabled: boolean;
+  onDelete: (rows: Row<ResponseType>[]) => void;
 }
 
-// Client component for data table
-const TransactionsTable = ({
+// Client component wrapper for DataTable to handle search params
+const ClientDataTableWrapper = ({
   transactions,
   isDisabled,
-}: TransactionsTableProps) => {
-  const deleteTransactions = useBulkDeleteTransactions();
-
+  onDelete,
+}: ClientDataTableWrapperProps) => {
   return (
     <DataTable
       filterKey="payee"
       columns={columns}
       data={transactions}
-      onDelete={row => {
-        const ids = row.map(r => r.original.id);
-        deleteTransactions.mutate({ ids });
-      }}
+      onDelete={onDelete}
       disabled={isDisabled}
     />
   );
@@ -133,6 +131,11 @@ const TransactionsPage = () => {
 
   const isDisabled =
     transactionsQuery.isLoading || deleteTransactions.isPending;
+
+  const handleDelete = (rows: Row<ResponseType>[]) => {
+    const ids = rows.map(r => r.original.id);
+    deleteTransactions.mutate({ ids });
+  };
 
   // Updated to match the ImportedTransaction interface and convert data types
   const onSubmitImport = async (values: ImportedTransaction[]) => {
@@ -203,9 +206,10 @@ const TransactionsPage = () => {
         </CardHeader>
         <CardContent>
           <Suspense fallback={<TableLoading />}>
-            <TransactionsTable
+            <ClientDataTableWrapper
               transactions={transactions}
               isDisabled={isDisabled}
+              onDelete={handleDelete}
             />
           </Suspense>
         </CardContent>
