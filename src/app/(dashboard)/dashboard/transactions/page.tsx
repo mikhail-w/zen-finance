@@ -15,7 +15,7 @@ import { useSelectAccount } from '@/features/accounts/hooks/use-select-account';
 import { toast } from 'sonner';
 import { useBulkCreateTransactions } from '@/features/transactions/api/use-bulk-create-transactions';
 import { ParseResult, ParseError } from 'papaparse';
-import { SearchParamsWrapper } from '@/components/search-params-wrapper';
+import { ResponseType } from './columns';
 
 enum VARIANTS {
   LIST = 'LIST',
@@ -74,6 +74,33 @@ const TableLoading = () => (
     <Loader2 className="size-6 text-slate-300 animate-spin" />
   </div>
 );
+
+// Define proper types for the TransactionsTable props
+interface TransactionsTableProps {
+  transactions: ResponseType[];
+  isDisabled: boolean;
+}
+
+// Client component for data table
+const TransactionsTable = ({
+  transactions,
+  isDisabled,
+}: TransactionsTableProps) => {
+  const deleteTransactions = useBulkDeleteTransactions();
+
+  return (
+    <DataTable
+      filterKey="payee"
+      columns={columns}
+      data={transactions}
+      onDelete={row => {
+        const ids = row.map(r => r.original.id);
+        deleteTransactions.mutate({ ids });
+      }}
+      disabled={isDisabled}
+    />
+  );
+};
 
 const TransactionsPage = () => {
   const [AccountDialog, confirm] = useSelectAccount();
@@ -176,20 +203,10 @@ const TransactionsPage = () => {
         </CardHeader>
         <CardContent>
           <Suspense fallback={<TableLoading />}>
-            <SearchParamsWrapper>
-              {({ searchParams }) => (
-                <DataTable
-                  filterKey="payee"
-                  columns={columns}
-                  data={transactions}
-                  onDelete={row => {
-                    const ids = row.map(r => r.original.id);
-                    deleteTransactions.mutate({ ids });
-                  }}
-                  disabled={isDisabled}
-                />
-              )}
-            </SearchParamsWrapper>
+            <TransactionsTable
+              transactions={transactions}
+              isDisabled={isDisabled}
+            />
           </Suspense>
         </CardContent>
       </Card>
