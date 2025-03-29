@@ -1,35 +1,39 @@
-import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
-import { client } from '@/lib/hono';
-import { convertAmountFromMiliunits } from '@/lib/utils';
+'use client';
+
+import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 
 export const useGetTransactions = () => {
-  const params = useSearchParams();
-  const from = params.get('from') || '';
-  const to = params.get('to') || '';
-  const accountId = params.get('accountId') || '';
-
-  const query = useQuery({
-    queryKey: ['transactions', { from, to, accountId }],
-    queryFn: async () => {
-      const response = await client.api.transactions.$get({
-        query: {
-          from,
-          to,
-          accountId,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch transactions');
-      }
-
-      const { data } = await response.json();
-      return data.map(transaction => ({
-        ...transaction,
-        amount: convertAmountFromMiliunits(transaction.amount),
-      }));
-    },
+  // Define a state to hold the data that would be returned by the hook
+  const [result, setResult] = useState({
+    data: null,
+    isLoading: true,
+    error: null,
   });
-  return query;
+
+  // Component that uses the client-side hook
+  const ClientComponent = dynamic(
+    () =>
+      import('./client-transactions-hook').then(mod => {
+        return function HookComponent() {
+          const { data, isLoading, error } = mod.useClientTransactions();
+
+          useEffect(() => {
+            setResult({
+              data,
+              isLoading,
+              error,
+            });
+          }, [data, isLoading, error]);
+
+          return null;
+        };
+      }),
+    { ssr: false }
+  );
+
+  return {
+    ...result,
+    ClientComponent,
+  };
 };

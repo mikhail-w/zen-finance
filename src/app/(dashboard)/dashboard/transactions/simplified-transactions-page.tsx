@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton'; // Add this import
 import { columns } from './columns';
 import { useNewTransaction } from '@/features/transactions/hooks/use-new-transaction';
-import { useGetTransactions } from '@/features/transactions/api/use-get-transactions';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useClientTransactions } from '@/features/transactions/api/client-transactions-hook';
 import { useBulkDeleteTransactions } from '@/features/transactions/api/use-bulk-delete-transactions';
 import { UploadButton } from './upload-button';
 import { ImportCard } from './import-card';
@@ -56,7 +56,7 @@ interface ImportedTransaction {
 
 // Loading component
 export const TransactionsLoading = () => (
-  <div className="w-full pb-10 -mt-24">
+  <div className="w-full pb-10">
     <Card className="border-none drop-shadow-sm w-full">
       <CardHeader>
         <Skeleton className="h-8 w-48" />
@@ -70,21 +70,29 @@ export const TransactionsLoading = () => (
   </div>
 );
 
-// Table loading component
-const TableLoading = () => (
-  <div className="h-[500px] w-full flex items-center justify-center">
-    <Loader2 className="size-6 text-slate-300 animate-spin" />
-  </div>
-);
-
-export function ClientTransactionsPage() {
+export function SimplifiedTransactionsPage() {
   const [AccountDialog, confirm] = useSelectAccount();
   const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
   const [importResults, setImportResults] = useState<ImportResultsType>(
     INITIAL_IMPORT_RESULTS
   );
 
-  // Updated to accept the ParseResult type from PapaParse
+  // Use useClientTransactions directly instead of useGetTransactions
+  const { data, isLoading, error } = useClientTransactions();
+  const transactions = useMemo(() => data || [], [data]);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('Transaction data:', {
+      isLoading,
+      hasError: !!error,
+      errorMessage: error?.message,
+      dataExists: !!data,
+      transactionCount: transactions.length,
+      sampleData: transactions.slice(0, 2),
+    });
+  }, [data, isLoading, error, transactions]);
+
   const onUpload = (results: ParseResult<string[]>) => {
     console.log({ results });
     setImportResults({
@@ -103,18 +111,14 @@ export function ClientTransactionsPage() {
   const newTransaction = useNewTransaction();
   const createTransactions = useBulkCreateTransactions();
   const deleteTransactions = useBulkDeleteTransactions();
-  const transactionsQuery = useGetTransactions();
-  const transactions = transactionsQuery.data || [];
 
-  const isDisabled =
-    transactionsQuery.isLoading || deleteTransactions.isPending;
+  const isDisabled = isLoading || deleteTransactions.isPending;
 
   const handleDelete = (rows: Row<ResponseType>[]) => {
     const ids = rows.map(r => r.original.id);
     deleteTransactions.mutate({ ids });
   };
 
-  // Updated to match the ImportedTransaction interface and convert data types
   const onSubmitImport = async (values: ImportedTransaction[]) => {
     try {
       const accountId = await confirm();
@@ -123,9 +127,8 @@ export function ClientTransactionsPage() {
         return toast.error('Please select an account to continue.');
       }
 
-      // Transform the data to match the schema, converting string dates to Date objects
+      // Transform the data to match the schema
       const data = values.map(value => {
-        // Create a new object with the correct types
         return {
           accountId,
           amount: value.amount,
@@ -145,7 +148,7 @@ export function ClientTransactionsPage() {
     }
   };
 
-  if (transactionsQuery.isLoading) {
+  if (isLoading) {
     return <TransactionsLoading />;
   }
 
@@ -163,7 +166,7 @@ export function ClientTransactionsPage() {
   }
 
   return (
-    <div className="w-full pb-10 -mt-24">
+    <div className="w-full pb-10">
       <Card className="border-none drop-shadow-sm">
         <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
           <CardTitle className="text-3xl line-clamp-1">
@@ -182,15 +185,22 @@ export function ClientTransactionsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <SearchParamsTable<ResponseType, unknown>
-            filterKey="payee"
-            disabled={isDisabled}
-            onDelete={handleDelete}
-            columns={columns}
-            data={transactions}
-          />
-          {transactionsQuery.ClientComponent && (
-            <transactionsQuery.ClientComponent />
+          {error ? (
+            <div className="p-6 bg-red-50 border border-red-200 rounded-md text-red-700">
+              Error loading transactions: {error.message}
+            </div>
+          ) : transactions.length === 0 ? (
+            <div className="flex flex-col items-center justify-center p-12 text-muted-foreground">
+              No transactions found. Add a transaction to get started.
+            </div>
+          ) : (
+            <SearchParamsTable<ResponseType, unknown>
+              filterKey="payee"
+              disabled={isDisabled}
+              onDelete={handleDelete}
+              columns={columns}
+              data={transactions}
+            />
           )}
         </CardContent>
       </Card>

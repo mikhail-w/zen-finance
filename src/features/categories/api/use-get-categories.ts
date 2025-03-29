@@ -1,5 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, UseQueryResult } from '@tanstack/react-query';
 import { client } from '@/lib/hono';
+import React from 'react';
+
+// Define extended type
+type ExtendedQueryResult<T> = UseQueryResult<T> & {
+  ClientComponent?: React.ComponentType;
+};
 
 export const useGetCategories = () => {
   const query = useQuery({
@@ -14,6 +20,7 @@ export const useGetCategories = () => {
       const { data } = await response.json();
       return data;
     },
-  });
+  }) as ExtendedQueryResult<{ id: string; name: string }[]>;
+
   return query;
 };

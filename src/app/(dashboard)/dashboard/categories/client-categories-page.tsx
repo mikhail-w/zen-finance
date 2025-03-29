@@ -4,23 +4,16 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
-import { useNewAccount } from '@/features/accounts/hooks/use-new-account';
+import { useNewCategory } from '@/features/categories/hooks/use-new-category';
 import { columns, ResponseType } from './columns';
+import { useGetCategories } from '@/features/categories/api/use-get-categories';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
-import { useBulkDeleteAccounts } from '@/features/accounts/api/use-bulk-delete-accounts';
+import { useBulkDeleteCategories } from '@/features/categories/api/use-bulk-delete-categories';
 import { SearchParamsTable } from '@/components/search-params-table';
 import { Row } from '@tanstack/react-table';
 
-// Loading component for data table
-const DataTableLoading = () => (
-  <div className="h-[500px] w-full flex items-center justify-center">
-    <Loader2 className="size-6 text-slate-300 animate-spin" />
-  </div>
-);
-
-// Loading component to display while data is being fetched
-export const AccountsLoading = () => (
+// Loading component
+const LoadingComponent = () => (
   <div className="w-full pb-10 -mt-24">
     <Card className="border-none drop-shadow-sm">
       <CardHeader>
@@ -35,27 +28,29 @@ export const AccountsLoading = () => (
   </div>
 );
 
-export function ClientAccountsPage() {
-  const newAccount = useNewAccount();
-  const deleteAccounts = useBulkDeleteAccounts();
-  const accountsQuery = useGetAccounts();
-  const accounts = accountsQuery.data || [];
+const ClientCategoriesPage = () => {
+  const newCategory = useNewCategory();
+  const deleteCategories = useBulkDeleteCategories();
+  const categoriesQuery = useGetCategories();
+  const categories = categoriesQuery.data || [];
 
-  const isDisabled = accountsQuery.isLoading || deleteAccounts.isPending;
+  const isDisabled = categoriesQuery.isLoading || deleteCategories.isPending;
 
-  if (accountsQuery.isLoading) {
-    return <AccountsLoading />;
+  if (categoriesQuery.isLoading) {
+    return <LoadingComponent />;
   }
 
   return (
     <div className="w-full pb-10 -mt-24">
-      <Card className="border-none drop-shadow-sm">
+      <Card className="border-none drop-shadow-sm ">
         <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
-          <CardTitle className="text-3xl line-clamp-1">Accounts page</CardTitle>
+          <CardTitle className="text-3xl line-clamp-1">
+            Categories page
+          </CardTitle>
           <Button
             className="text-white text-lg font-medium w-auto"
             size={'sm'}
-            onClick={newAccount.onOpen}
+            onClick={newCategory.onOpen}
           >
             <Plus size={24} className="mr-2" />
             Add New
@@ -66,15 +61,19 @@ export function ClientAccountsPage() {
             disabled={isDisabled}
             onDelete={(rows: Row<ResponseType>[]) => {
               const ids = rows.map(r => r.original.id);
-              deleteAccounts.mutate({ ids });
+              deleteCategories.mutate({ ids });
             }}
             filterKey="name"
             columns={columns}
-            data={accounts}
+            data={categories}
           />
-          {accountsQuery.ClientComponent && <accountsQuery.ClientComponent />}
+          {categoriesQuery.ClientComponent && (
+            <categoriesQuery.ClientComponent />
+          )}
         </CardContent>
       </Card>
     </div>
   );
-}
+};
+
+export default ClientCategoriesPage;

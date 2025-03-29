@@ -1,50 +1,64 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
-import { client } from '@/lib/hono';
-import { convertAmountFromMiliunits } from '@/lib/utils';
+import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
+import { ComponentType } from 'react';
 
-export const useGetSummary = () => {
-  const params = useSearchParams();
-  const from = params.get('from') || '';
-  const to = params.get('to') || '';
-  const accountId = params.get('accountId') || '';
+// Define the types for your summary data
+export type SummaryData = {
+  remainingAmount: number;
+  remainingChange: number;
+  incomeAmount: number;
+  incomeChange: number;
+  expensesAmount: number;
+  expensesChange: number;
+  categories: Array<{ value: number; name: string }>;
+  days: Array<{ date: string; income: number; expenses: number }>;
+};
 
-  const query = useQuery({
-    queryKey: ['summary', { from, to, accountId }],
-    queryFn: async () => {
-      const response = await client.api.summary.$get({
-        query: {
-          from,
-          to,
-          accountId,
-        },
-      });
+// Define the return type of the hook
+type UseGetSummaryResult = {
+  data: SummaryData | null;
+  isLoading: boolean;
+  error: Error | null;
+  ClientComponent: ComponentType;
+};
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch summary');
-      }
-
-      const { data } = await response.json();
-
-      return {
-        ...data,
-        incomeAmount: convertAmountFromMiliunits(data.incomeAmount),
-        expensesAmount: convertAmountFromMiliunits(data.expensesAmount), // Fixed property name to match DataCard
-        remainingAmount: convertAmountFromMiliunits(data.remainingAmount),
-        categories: data.categories.map(category => ({
-          ...category,
-          value: convertAmountFromMiliunits(category.value),
-        })),
-        days: data.days.map(day => ({
-          ...day,
-          income: convertAmountFromMiliunits(day.income),
-          expenses: convertAmountFromMiliunits(day.expenses),
-        })),
-      };
-    },
+export const useGetSummary = (): UseGetSummaryResult => {
+  // Define a state to hold the data that would be returned by the hook
+  const [result, setResult] = useState<{
+    data: SummaryData | null;
+    isLoading: boolean;
+    error: Error | null;
+  }>({
+    data: null,
+    isLoading: true,
+    error: null,
   });
 
-  return query;
+  // Component that uses the client-side hook
+  const ClientComponent = dynamic(
+    () =>
+      import('./client-summary-hook').then(mod => {
+        return function HookComponent() {
+          const { data, isLoading, error } = mod.useClientSummary();
+
+          useEffect(() => {
+            setResult({
+              data,
+              isLoading,
+              error,
+            });
+          }, [data, isLoading, error]);
+
+          return null;
+        };
+      }),
+    { ssr: false }
+  );
+
+  return {
+    ...result,
+    ClientComponent,
+  };
 };
