@@ -9,7 +9,8 @@ import { columns } from './columns';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { useBulkDeleteAccounts } from '@/features/accounts/api/use-bulk-delete-accounts';
-import { DataTableClientWrapper } from './data-table-client-wrapper';
+import { SearchParamsWrapper } from '@/components/search-params-wrapper';
+import { DataTable } from '@/components/ui/data-table';
 
 // Loading component for data table
 const DataTableLoading = () => (
@@ -33,6 +34,25 @@ export const AccountsLoading = () => (
     </Card>
   </div>
 );
+
+// Client component wrapper for DataTable to handle search params
+const DataTableClientWrapper = ({ data, columns, disabled, onDelete }) => {
+  return (
+    <Suspense fallback={<DataTableLoading />}>
+      <SearchParamsWrapper>
+        {({ searchParams }) => (
+          <DataTable
+            disabled={disabled}
+            onDelete={onDelete}
+            filterKey="name"
+            columns={columns}
+            data={data}
+          />
+        )}
+      </SearchParamsWrapper>
+    </Suspense>
+  );
+};
 
 export function ClientAccountsPage() {
   const newAccount = useNewAccount();
@@ -61,18 +81,15 @@ export function ClientAccountsPage() {
           </Button>
         </CardHeader>
         <CardContent>
-          <Suspense fallback={<DataTableLoading />}>
-            <DataTableClientWrapper
-              disabled={isDisabled}
-              onDelete={row => {
-                const ids = row.map(r => r.original.id);
-                deleteAccounts.mutate({ ids });
-              }}
-              filterKey="name"
-              columns={columns}
-              data={accounts}
-            />
-          </Suspense>
+          <DataTableClientWrapper
+            disabled={isDisabled}
+            onDelete={row => {
+              const ids = row.map(r => r.original.id);
+              deleteAccounts.mutate({ ids });
+            }}
+            columns={columns}
+            data={accounts}
+          />
         </CardContent>
       </Card>
     </div>
