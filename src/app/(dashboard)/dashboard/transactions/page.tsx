@@ -1,8 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { transactions as transactionSchema } from '@/db/schema';
 import { Loader2, Plus } from 'lucide-react';
 import { columns } from './columns';
 import { useNewTransaction } from '@/features/transactions/hooks/use-new-transaction';
@@ -16,6 +15,7 @@ import { useSelectAccount } from '@/features/accounts/hooks/use-select-account';
 import { toast } from 'sonner';
 import { useBulkCreateTransactions } from '@/features/transactions/api/use-bulk-create-transactions';
 import { ParseResult, ParseError } from 'papaparse';
+import { DataTableClientWrapper } from '../accounts/data-table-client-wrapper';
 
 enum VARIANTS {
   LIST = 'LIST',
@@ -51,6 +51,29 @@ interface ImportedTransaction {
   payee: string;
   [key: string]: string | number;
 }
+
+// Loading component
+const TransactionsLoading = () => (
+  <div className="w-full pb-10 -mt-24">
+    <Card className="border-none drop-shadow-sm w-full">
+      <CardHeader>
+        <Skeleton className="h-8 w-48" />
+      </CardHeader>
+      <CardContent>
+        <div className="h-[500px] w-full flex items-center justify-center">
+          <Loader2 className="size-6 text-slate-300 animate-spin" />
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+);
+
+// Table loading component
+const TableLoading = () => (
+  <div className="h-[500px] w-full flex items-center justify-center">
+    <Loader2 className="size-6 text-slate-300 animate-spin" />
+  </div>
+);
 
 const TransactionsPage = () => {
   const [AccountDialog, confirm] = useSelectAccount();
@@ -118,20 +141,7 @@ const TransactionsPage = () => {
   };
 
   if (transactionsQuery.isLoading) {
-    return (
-      <div className="w-full pb-10 -mt-24">
-        <Card className="border-none drop-shadow-sm w-full">
-          <CardHeader>
-            <Skeleton className="h-8 w-48" />
-          </CardHeader>
-          <CardContent>
-            <div className="h-[500px] w-full flex items-center justify-center">
-              <Loader2 className="size-6 text-slate-300 animate-spin" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <TransactionsLoading />;
   }
 
   if (variant === VARIANTS.IMPORT) {
@@ -167,16 +177,18 @@ const TransactionsPage = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <DataTable
-            filterKey="payee"
-            columns={columns}
-            data={transactions}
-            onDelete={row => {
-              const ids = row.map(r => r.original.id);
-              deleteTransactions.mutate({ ids });
-            }}
-            disabled={isDisabled}
-          />
+          <Suspense fallback={<TableLoading />}>
+            <DataTableClientWrapper
+              filterKey="payee"
+              columns={columns}
+              data={transactions}
+              onDelete={row => {
+                const ids = row.map(r => r.original.id);
+                deleteTransactions.mutate({ ids });
+              }}
+              disabled={isDisabled}
+            />
+          </Suspense>
         </CardContent>
       </Card>
     </div>
