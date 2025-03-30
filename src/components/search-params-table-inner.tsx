@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { ColumnDef, Row } from '@tanstack/react-table';
 import { DataTable } from '@/components/ui/data-table';
 
-interface DataTableWithParamsProps<TData, TValue> {
+export interface DataTableWithParamsProps<TData = unknown, TValue = unknown> {
   data: TData[];
   columns: ColumnDef<TData, TValue>[];
   filterKey: string;
@@ -23,7 +23,7 @@ export function DataTableWithParams<TData, TValue>({
   useSearchParams();
 
   return (
-    <DataTable
+    <DataTable<TData, TValue>
       data={data}
       columns={columns}
       filterKey={filterKey}
