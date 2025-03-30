@@ -22,9 +22,11 @@ interface SummaryData {
   incomeAmount: number;
   expensesAmount: number;
   remainingAmount: number;
+  remainingChange: number;
+  incomeChange: number;
+  expensesChange: number;
   categories: Category[];
   days: DaySummary[];
-  // Add any additional fields here if needed
 }
 
 export function useClientSummary() {
@@ -56,6 +58,9 @@ export function useClientSummary() {
         incomeAmount: convertAmountFromMiliunits(data.incomeAmount),
         expensesAmount: convertAmountFromMiliunits(data.expensesAmount),
         remainingAmount: convertAmountFromMiliunits(data.remainingAmount),
+        remainingChange: convertAmountFromMiliunits(data.remainingChange),
+        incomeChange: convertAmountFromMiliunits(data.incomeChange),
+        expensesChange: convertAmountFromMiliunits(data.expensesChange),
         categories: data.categories.map((category: Category) => ({
           ...category,
           value: convertAmountFromMiliunits(category.value),

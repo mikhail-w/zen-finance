@@ -44,11 +44,7 @@ export const useGetSummary = (): UseGetSummaryResult => {
           const { data, isLoading, error } = mod.useClientSummary();
 
           useEffect(() => {
-            setResult({
-              data,
-              isLoading,
-              error,
-            });
+            setResult({ data: data ?? null, isLoading, error });
           }, [data, isLoading, error]);
 
           return null;
