@@ -49,6 +49,7 @@ export const useBulkCreateTransactions = () => {
 
       // Force refetch transactions
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['summary'] });
 
       // Wait for the query to be refetched
       setTimeout(() => {
