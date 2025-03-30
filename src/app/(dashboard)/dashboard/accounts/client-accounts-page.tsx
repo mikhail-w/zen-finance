@@ -43,7 +43,10 @@ const TableWithSearchParams = ({
 }: {
   accounts: ResponseType[];
   isDisabled: boolean;
-  deleteAccounts: any;
+  deleteAccounts: {
+    mutate: (params: { ids: string[] }) => void;
+    isPending: boolean;
+  };
 }) => {
   return (
     <SearchParamsTable<ResponseType, unknown>
