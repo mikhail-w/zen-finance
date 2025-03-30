@@ -189,9 +189,6 @@ export function ClientTransactionsPage() {
             columns={columns}
             data={transactions}
           />
-          {transactionsQuery.ClientComponent && (
-            <transactionsQuery.ClientComponent />
-          )}
         </CardContent>
       </Card>
     </div>
