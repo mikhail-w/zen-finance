@@ -1,13 +1,27 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 
 type SearchParamsWrapperProps = {
   children: (props: { searchParams: URLSearchParams }) => ReactNode;
+  fallback?: ReactNode;
 };
 
-export function SearchParamsWrapper({ children }: SearchParamsWrapperProps) {
+// Inner component that uses useSearchParams
+function SearchParamsInner({ children }: SearchParamsWrapperProps) {
   const searchParams = useSearchParams();
-  return children({ searchParams });
+  return <>{children({ searchParams })}</>;
+}
+
+// Wrapper with Suspense boundary
+export function SearchParamsWrapper({
+  children,
+  fallback = <div>Loading search parameters...</div>,
+}: SearchParamsWrapperProps) {
+  return (
+    <Suspense fallback={fallback}>
+      <SearchParamsInner>{props => children(props)}</SearchParamsInner>
+    </Suspense>
+  );
 }

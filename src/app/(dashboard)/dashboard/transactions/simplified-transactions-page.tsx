@@ -166,7 +166,7 @@ export function SimplifiedTransactionsPage() {
   }
 
   return (
-    <div className="w-full pb-10">
+    <div className="w-full pb-10 -mt-24">
       <Card className="border-none drop-shadow-sm">
         <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
           <CardTitle className="text-3xl line-clamp-1">

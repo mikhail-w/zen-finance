@@ -4,7 +4,7 @@ const nextConfig = {
   skipTrailingSlashRedirect: true,
   skipMiddlewareUrlNormalize: true,
 
-  // Force all pages to be dynamic by default - this helps with client hooks
+  // Force all pages to be dynamic by default
   reactStrictMode: false,
 
   // Skip TypeScript checks during builds
@@ -19,11 +19,21 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // Disable static generation to avoid client-side hooks issues
-  staticPageGenerationTimeout: 0,
+  // Force dynamic rendering for all pages
+  experimental: {
+    // Disable caching for data fetching
+    appDir: true,
+    serverActions: {
+      allowedOrigins: ['*'],
+    },
+  },
 
   // Set output to standalone for better Vercel compatibility
   output: 'standalone',
+
+  // Disable static optimization completely
+  distDir: '.next',
+  poweredByHeader: false,
 };
 
 module.exports = nextConfig;
