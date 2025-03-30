@@ -1,10 +1,6 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "next build",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "devCommand": "next dev",
-  "ignoreCommand": "echo 'Skipping Vercel checks'",
-  "buildOptions": {
-    "debug": true
-  }
+  "devCommand": "next dev"
 }
