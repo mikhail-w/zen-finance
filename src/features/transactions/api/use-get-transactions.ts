@@ -1,39 +1,46 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { client } from '@/lib/hono';
+import { convertAmountFromMiliunits } from '@/lib/utils';
 
-export const useGetTransactions = () => {
-  // Define a state to hold the data that would be returned by the hook
-  const [result, setResult] = useState({
-    data: null,
-    isLoading: true,
-    error: null,
+// Define the Transaction type inline
+interface Transaction {
+  amount: number;
+  id: string;
+  date: string;
+  category: string | null;
+  categoryId: string | null;
+  payee: string;
+  notes: string | null;
+  account: string;
+  accountId: string;
+}
+
+export function useGetTransactions() {
+  return useQuery<Transaction[] | null>({
+    queryKey: ['transactions'],
+    queryFn: async () => {
+      const response = await client.api.transactions.$get({ query: {} });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch transactions');
+      }
+      const { data } = await response.json();
+
+      // If no data is returned (i.e. undefined or falsy), return null.
+      if (!data) {
+        return null;
+      }
+
+      // Map the transactions and convert the amount properly.
+      const transactions: Transaction[] = data.map(
+        (transaction: Transaction) => ({
+          ...transaction,
+          amount: convertAmountFromMiliunits(transaction.amount),
+        })
+      );
+      return transactions;
+    },
   });
-
-  // Component that uses the client-side hook
-  const ClientComponent = dynamic(
-    () =>
-      import('./client-transactions-hook').then(mod => {
-        return function HookComponent() {
-          const { data, isLoading, error } = mod.useClientTransactions();
-
-          useEffect(() => {
-            setResult({
-              data,
-              isLoading,
-              error,
-            });
-          }, [data, isLoading, error]);
-
-          return null;
-        };
-      }),
-    { ssr: false }
-  );
-
-  return {
-    ...result,
-    ClientComponent,
-  };
-};
+}
