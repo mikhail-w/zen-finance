@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
@@ -35,6 +35,30 @@ export const AccountsLoading = () => (
   </div>
 );
 
+// Wrapper for the table component that uses search params
+const TableWithSearchParams = ({
+  accounts,
+  isDisabled,
+  deleteAccounts,
+}: {
+  accounts: ResponseType[];
+  isDisabled: boolean;
+  deleteAccounts: any;
+}) => {
+  return (
+    <SearchParamsTable<ResponseType, unknown>
+      disabled={isDisabled}
+      onDelete={(rows: Row<ResponseType>[]) => {
+        const ids = rows.map(r => r.original.id);
+        deleteAccounts.mutate({ ids });
+      }}
+      filterKey="name"
+      columns={columns}
+      data={accounts}
+    />
+  );
+};
+
 export function ClientAccountsPage() {
   const newAccount = useNewAccount();
   const deleteAccounts = useBulkDeleteAccounts();
@@ -62,16 +86,13 @@ export function ClientAccountsPage() {
           </Button>
         </CardHeader>
         <CardContent>
-          <SearchParamsTable<ResponseType, unknown>
-            disabled={isDisabled}
-            onDelete={(rows: Row<ResponseType>[]) => {
-              const ids = rows.map(r => r.original.id);
-              deleteAccounts.mutate({ ids });
-            }}
-            filterKey="name"
-            columns={columns}
-            data={accounts}
-          />
+          <Suspense fallback={<DataTableLoading />}>
+            <TableWithSearchParams
+              accounts={accounts}
+              isDisabled={isDisabled}
+              deleteAccounts={deleteAccounts}
+            />
+          </Suspense>
           {accountsQuery.ClientComponent && <accountsQuery.ClientComponent />}
         </CardContent>
       </Card>

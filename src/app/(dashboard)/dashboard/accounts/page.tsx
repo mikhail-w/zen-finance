@@ -1,5 +1,6 @@
 'use client';
 import nextDynamic from 'next/dynamic';
+import { Suspense } from 'react';
 import { Loader2 } from 'lucide-react';
 import { NewAccountSheet } from '@/features/accounts/components/new-account-sheet';
 import { EditAccountSheet } from '@/features/accounts/components/edit-account-sheet';
@@ -22,11 +23,11 @@ const ClientAccountsPage = nextDynamic(
 
 export default function AccountsPage() {
   return (
-    <>
+    <Suspense fallback={<AccountsLoading />}>
       <ClientAccountsPage />
       <NewAccountSheet />
       <EditAccountSheet />
-    </>
+    </Suspense>
   );
 }
 
