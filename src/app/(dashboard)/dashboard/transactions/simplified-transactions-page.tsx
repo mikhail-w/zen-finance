@@ -194,13 +194,14 @@ export function SimplifiedTransactionsPage() {
               No transactions found. Add a transaction to get started.
             </div>
           ) : (
-            <SearchParamsTable<ResponseType, unknown>
-              filterKey="payee"
-              disabled={isDisabled}
-              onDelete={handleDelete}
-              columns={columns}
-              data={transactions}
-            />
+            // <SearchParamsTable<ResponseType, unknown>
+            //   filterKey="payee"
+            //   disabled={isDisabled}
+            //   onDelete={handleDelete}
+            //   columns={columns}
+            //   data={transactions}
+            // />
+            <></>
           )}
         </CardContent>
       </Card>

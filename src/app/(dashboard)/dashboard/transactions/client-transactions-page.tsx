@@ -182,13 +182,13 @@ export function ClientTransactionsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <SearchParamsTable<ResponseType, unknown>
+          {/* <SearchParamsTable<ResponseType, unknown>
             filterKey="payee"
             disabled={isDisabled}
             onDelete={handleDelete}
             columns={columns}
             data={transactions}
-          />
+          /> */}
         </CardContent>
       </Card>
     </div>

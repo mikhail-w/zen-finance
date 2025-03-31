@@ -57,7 +57,7 @@ const ClientCategoriesPage = () => {
           </Button>
         </CardHeader>
         <CardContent>
-          <SearchParamsTable<ResponseType, unknown>
+          {/* <SearchParamsTable<ResponseType, unknown>
             disabled={isDisabled}
             onDelete={(rows: Row<ResponseType>[]) => {
               const ids = rows.map(r => r.original.id);
@@ -66,7 +66,7 @@ const ClientCategoriesPage = () => {
             filterKey="name"
             columns={columns}
             data={categories}
-          />
+          /> */}
           {categoriesQuery.ClientComponent && (
             <categoriesQuery.ClientComponent />
           )}
