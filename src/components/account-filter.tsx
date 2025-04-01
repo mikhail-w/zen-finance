@@ -4,6 +4,7 @@ import qs from 'query-string';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { useGetSummary } from '@/features/summary/api/use-get-summary';
+import { SearchParamsWrapper } from '@/components/search-params-wrapper';
 
 import {
   Select,
@@ -13,7 +14,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export const AccountFilter = () => {
+// Inner component that uses useSearchParams
+function AccountFilterInner() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -68,4 +70,13 @@ export const AccountFilter = () => {
       </SelectContent>
     </Select>
   );
-};
+}
+
+// Wrapper component with Suspense boundary
+export function AccountFilter() {
+  return (
+    <SearchParamsWrapper>
+      {({ searchParams }) => <AccountFilterInner />}
+    </SearchParamsWrapper>
+  );
+}

@@ -5,6 +5,7 @@ import { formatDateRange } from '@/lib/utils';
 import { FaPiggyBank } from 'react-icons/fa';
 import { FaArrowTrendUp, FaArrowTrendDown } from 'react-icons/fa6';
 import { DataCard, DataCardLoading } from '@/components/data-card';
+import { SearchParamsWrapper } from '@/components/search-params-wrapper';
 
 // Define the type for your summary data
 type SummaryData = {
@@ -18,7 +19,8 @@ type SummaryData = {
   days?: Array<{ date: string; income: number; expenses: number }>;
 };
 
-export const ClientDataGrid = () => {
+// Inner component that uses useSearchParams
+function ClientDataGridInner() {
   const { data, isLoading, ClientComponent } = useGetSummary();
   const params = useSearchParams();
   const to = params.get('to') || undefined;
@@ -80,4 +82,13 @@ export const ClientDataGrid = () => {
   }
 
   return renderContent();
-};
+}
+
+// Wrapper component with Suspense boundary
+export function ClientDataGrid() {
+  return (
+    <SearchParamsWrapper>
+      {({ searchParams }) => <ClientDataGridInner />}
+    </SearchParamsWrapper>
+  );
+}

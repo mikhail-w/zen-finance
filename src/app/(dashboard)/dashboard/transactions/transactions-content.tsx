@@ -16,7 +16,8 @@ import { useBulkCreateTransactions } from '@/features/transactions/api/use-bulk-
 import { ParseResult, ParseError } from 'papaparse';
 import { ResponseType } from './columns';
 import { Row } from '@tanstack/react-table';
-import { SimpleDataTable } from '@/components/ui/simple-data-table'; // Use the simple table
+import { DataTableWithParams } from '@/components/search-params-table-inner';
+import { SearchParamsWrapper } from '@/components/search-params-wrapper';
 
 enum VARIANTS {
   LIST = 'LIST',
@@ -179,13 +180,17 @@ export default function TransactionsContent() {
               No transactions found. Add a transaction to get started.
             </div>
           ) : (
-            <SimpleDataTable
-              filterKey="payee"
-              disabled={isDisabled}
-              onDelete={handleDelete}
-              columns={columns}
-              data={transactions}
-            />
+            <SearchParamsWrapper>
+              {({ searchParams }) => (
+                <DataTableWithParams
+                  filterKey="payee"
+                  disabled={isDisabled}
+                  onDelete={handleDelete}
+                  columns={columns}
+                  data={transactions}
+                />
+              )}
+            </SearchParamsWrapper>
           )}
         </CardContent>
       </Card>

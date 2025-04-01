@@ -1,56 +1,68 @@
 'use client';
 
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useClientSummary } from '@/features/summary/api/client-summary-hook';
-import { Chart, ChartLoading } from '@/components/chart';
-import { SpendingPie, SpendingPieLoading } from '@/components/spending-pie';
-import { useEffect } from 'react';
+import { SearchParamsWrapper } from '@/components/search-params-wrapper';
+import { Suspense } from 'react';
 
-export const DataCharts = () => {
+function DataChartsInner() {
   const { data, isLoading } = useClientSummary();
 
-  // Add debugging to see what's happening
-  useEffect(() => {
-    console.log('DataCharts render:', { data, isLoading });
-  }, [data, isLoading]);
-
   if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
-        <div className="col-span-1 lg:col-span-3 xl:col-span-4">
-          <ChartLoading />
-        </div>
-        <div className="col-span-1 lg:col-span-3 xl:col-span-2">
-          <SpendingPieLoading />
-        </div>
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
-  if (!data || !data.days || !data.categories) {
-    return (
-      <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
-        <div className="col-span-1 lg:col-span-3 xl:col-span-4">
-          <div className="h-96 rounded-md border flex items-center justify-center">
-            No data available
-          </div>
-        </div>
-        <div className="col-span-1 lg:col-span-3 xl:col-span-2">
-          <div className="h-96 rounded-md border flex items-center justify-center">
-            No spending data
-          </div>
-        </div>
-      </div>
-    );
+  if (!data) {
+    return <div>No data available</div>;
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-6 gap-8">
-      <div className="col-span-1 lg:col-span-3 xl:col-span-4">
-        <Chart data={data.days} />
-      </div>
-      <div className="col-span-1 lg:col-span-3 xl:col-span-2">
-        <SpendingPie data={data.categories} />
-      </div>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Income</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">${data.incomeAmount.toFixed(2)}</div>
+          <p className="text-xs text-muted-foreground">
+            {data.incomeChange >= 0 ? '+' : ''}${data.incomeChange.toFixed(2)} from last period
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">${data.expensesAmount.toFixed(2)}</div>
+          <p className="text-xs text-muted-foreground">
+            {data.expensesChange >= 0 ? '+' : ''}${data.expensesChange.toFixed(2)} from last period
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Remaining</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">${data.remainingAmount.toFixed(2)}</div>
+          <p className="text-xs text-muted-foreground">
+            {data.remainingChange >= 0 ? '+' : ''}${data.remainingChange.toFixed(2)} from last period
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
-};
+}
+
+export function DataCharts() {
+  return (
+    <SearchParamsWrapper>
+      {({ searchParams }) => (
+        <Suspense fallback={<div>Loading...</div>}>
+          <DataChartsInner />
+        </Suspense>
+      )}
+    </SearchParamsWrapper>
+  );
+}

@@ -7,7 +7,7 @@ import { Loader2, Plus } from 'lucide-react';
 import { useNewCategory } from '@/features/categories/hooks/use-new-category';
 import { useGetCategories } from '@/features/categories/api/use-get-categories';
 import { useBulkDeleteCategories } from '@/features/categories/api/use-bulk-delete-categories';
-import { SimpleDataTable } from '@/components/ui/simple-data-table'; // Use the new component
+import { DataTableWithParams } from '@/components/search-params-table-inner';
 import { columns } from './columns';
 import { Row } from '@tanstack/react-table';
 
@@ -57,7 +57,7 @@ export default function CategoriesContent() {
           </Button>
         </CardHeader>
         <CardContent>
-          <SimpleDataTable
+          <DataTableWithParams
             data={categories}
             columns={columns}
             filterKey="name"

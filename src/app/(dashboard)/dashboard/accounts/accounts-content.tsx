@@ -7,7 +7,7 @@ import { Loader2, Plus } from 'lucide-react';
 import { useNewAccount } from '@/features/accounts/hooks/use-new-account';
 import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { useBulkDeleteAccounts } from '@/features/accounts/api/use-bulk-delete-accounts';
-import { SimpleDataTable } from '@/components/ui/simple-data-table';
+import { DataTableWithParams } from '@/components/search-params-table-inner';
 import { columns } from './columns';
 import { Row } from '@tanstack/react-table';
 
@@ -57,7 +57,7 @@ export default function AccountsContent() {
           </Button>
         </CardHeader>
         <CardContent>
-          <SimpleDataTable
+          <DataTableWithParams
             data={accounts}
             columns={columns}
             filterKey="name"
