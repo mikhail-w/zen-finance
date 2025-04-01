@@ -49,17 +49,16 @@ const TableWithSearchParams = ({
   };
 }) => {
   return (
-    // <SearchParamsTable<ResponseType, unknown>
-    //   disabled={isDisabled}
-    //   onDelete={(rows: Row<ResponseType>[]) => {
-    //     const ids = rows.map(r => r.original.id);
-    //     deleteAccounts.mutate({ ids });
-    //   }}
-    //   filterKey="name"
-    //   columns={columns}
-    //   data={accounts}
-    // />
-    <></>
+    <SearchParamsTable<ResponseType, unknown>
+      disabled={isDisabled}
+      onDelete={(rows: Row<ResponseType>[]) => {
+        const ids = rows.map(r => r.original.id);
+        deleteAccounts.mutate({ ids });
+      }}
+      filterKey="name"
+      columns={columns}
+      data={accounts}
+    />
   );
 };
 
