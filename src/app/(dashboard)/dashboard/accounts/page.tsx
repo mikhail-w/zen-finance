@@ -1,16 +1,16 @@
 'use client';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
 import { useNewAccount } from '@/features/accounts/hooks/use-new-account';
 import { columns } from './columns';
-import { DataTable } from '@/components/ui/data-table';
+import { DataTableWithParams } from '@/components/data-table-with-params';
 import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBulkDeleteAccounts } from '@/features/accounts/api/use-bulk-delete-accounts';
 
-const AccountsPage = () => {
+function AccountsContent() {
   const newAccount = useNewAccount();
   const deleteAccounts = useBulkDeleteAccounts();
   const accountsQuery = useGetAccounts();
@@ -50,7 +50,7 @@ const AccountsPage = () => {
           </Button>
         </CardHeader>
         <CardContent>
-          <DataTable
+          <DataTableWithParams
             disabled={isDisabled}
             onDelete={row => {
               const ids = row.map(r => r.original.id);
@@ -64,6 +64,12 @@ const AccountsPage = () => {
       </Card>
     </div>
   );
-};
+}
 
-export default AccountsPage;
+export default function AccountsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AccountsContent />
+    </Suspense>
+  );
+}

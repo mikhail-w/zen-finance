@@ -1,12 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { transactions as transactionSchema } from '@/db/schema';
 import { Loader2, Plus } from 'lucide-react';
 import { columns } from './columns';
 import { useNewTransaction } from '@/features/transactions/hooks/use-new-transaction';
-import { DataTable } from '@/components/ui/data-table';
+import { DataTableWithParams } from '@/components/data-table-with-params';
 import { useGetTransactions } from '@/features/transactions/api/use-get-transactions';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBulkDeleteTransactions } from '@/features/transactions/api/use-bulk-delete-transactions';
@@ -52,7 +52,7 @@ interface ImportedTransaction {
   [key: string]: string | number;
 }
 
-const TransactionsPage = () => {
+function TransactionsContent() {
   const [AccountDialog, confirm] = useSelectAccount();
   const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
   const [importResults, setImportResults] = useState<ImportResultsType>(
@@ -99,28 +99,53 @@ const TransactionsPage = () => {
         return {
           accountId,
           amount: value.amount,
-          date: new Date(value.date), // Convert string date to Date object
+          date: new Date(value.date),
           payee: value.payee,
-          // Include any other properties you need from value
-          // Make sure to handle any type conversions as needed
         };
       });
 
-      createTransactions.mutate(data, {
-        onSuccess: () => {
-          onCancelImport();
-        },
-      });
+      await createTransactions.mutateAsync(data);
+      toast.success('Transactions imported successfully');
+      setVariant(VARIANTS.LIST);
+      setImportResults(INITIAL_IMPORT_RESULTS);
     } catch (error) {
-      console.error('Error in import submission:', error);
-      toast.error('An error occurred while importing transactions.');
+      console.error('Error importing transactions:', error);
+      toast.error('Failed to import transactions');
     }
   };
+
+  if (variant === VARIANTS.IMPORT) {
+    return (
+      <div className="w-full pb-10 -mt-24">
+        <Card className="border-none drop-shadow-sm">
+          <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
+            <CardTitle className="text-3xl line-clamp-1">
+              Import Transactions
+            </CardTitle>
+            <Button
+              className="text-white text-lg font-medium w-auto"
+              size={'sm'}
+              onClick={onCancelImport}
+            >
+              Cancel
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <ImportCard
+              data={importResults.data}
+              onCancel={onCancelImport}
+              onSubmit={onSubmitImport}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (transactionsQuery.isLoading) {
     return (
       <div className="w-full pb-10 -mt-24">
-        <Card className="border-none drop-shadow-sm w-full">
+        <Card className="border-none drop-shadow-sm">
           <CardHeader>
             <Skeleton className="h-8 w-48" />
           </CardHeader>
@@ -134,53 +159,45 @@ const TransactionsPage = () => {
     );
   }
 
-  if (variant === VARIANTS.IMPORT) {
-    return (
-      <>
-        <AccountDialog />
-        <ImportCard
-          data={importResults.data}
-          onCancel={onCancelImport}
-          onSubmit={onSubmitImport}
-        />
-      </>
-    );
-  }
-
   return (
     <div className="w-full pb-10 -mt-24">
       <Card className="border-none drop-shadow-sm">
         <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
-          <CardTitle className="text-3xl line-clamp-1">
-            Transaction History
-          </CardTitle>
-          <div className="flex flex-col lg:flex-row gap-y-2 items-center gap-x-2">
-            <Button
-              onClick={newTransaction.onOpen}
-              size="sm"
-              className="w-full lg:w-auto"
-            >
-              <Plus className="size-4 mr-2" />
-              Add new
-            </Button>
+          <CardTitle className="text-3xl line-clamp-1">Transactions page</CardTitle>
+          <div className="flex items-center gap-x-2">
             <UploadButton onUpload={onUpload} />
+            <Button
+              className="text-white text-lg font-medium w-auto"
+              size={'sm'}
+              onClick={newTransaction.onOpen}
+            >
+              <Plus size={24} className="mr-2" />
+              Add New
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
-          <DataTable
-            filterKey="payee"
-            columns={columns}
-            data={transactions}
+          <DataTableWithParams
+            disabled={isDisabled}
             onDelete={row => {
               const ids = row.map(r => r.original.id);
               deleteTransactions.mutate({ ids });
             }}
-            disabled={isDisabled}
+            filterKey="payee"
+            columns={columns}
+            data={transactions}
           />
         </CardContent>
       </Card>
+      <AccountDialog />
     </div>
   );
-};
+}
 
-export default TransactionsPage;
+export default function TransactionsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <TransactionsContent />
+    </Suspense>
+  );
+}

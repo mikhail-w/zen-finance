@@ -5,7 +5,8 @@ import { format, subDays, parse, isValid } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { ChevronDown } from 'lucide-react';
 import qs from 'query-string';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
+import { FilterWrapper } from '@/components/filter-wrapper';
 
 import { cn, formatDateRange } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -17,13 +18,12 @@ import {
   PopoverClose,
 } from '@/components/ui/popover';
 
-export const DateFilter = () => {
+function DateFilterInner({ searchParams }: { searchParams: URLSearchParams }) {
   const router = useRouter();
   const pathname = usePathname();
-  const params = useSearchParams();
-  const accountId = params.get('accountId');
-  const fromParam = params.get('from') || '';
-  const toParam = params.get('to') || '';
+  const accountId = searchParams.get('accountId');
+  const fromParam = searchParams.get('from') || '';
+  const toParam = searchParams.get('to') || '';
 
   const defaultTo = new Date();
   const defaultFrom = subDays(defaultTo, 30);
@@ -143,4 +143,12 @@ export const DateFilter = () => {
       </PopoverContent>
     </Popover>
   );
-};
+}
+
+export function DateFilter() {
+  return (
+    <FilterWrapper>
+      {({ searchParams }) => <DateFilterInner searchParams={searchParams} />}
+    </FilterWrapper>
+  );
+}

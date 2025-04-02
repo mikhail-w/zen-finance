@@ -1,16 +1,16 @@
 'use client';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2, Plus } from 'lucide-react';
 import { useNewCategory } from '@/features/categories/hooks/use-new-category';
 import { columns } from './columns';
-import { DataTable } from '@/components/ui/data-table';
+import { DataTableWithParams } from '@/components/data-table-with-params';
 import { useGetCategories } from '@/features/categories/api/use-get-categories';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBulkDeleteCategories } from '@/features/categories/api/use-bulk-delete-categories';
 
-const CategoriesPage = () => {
+function CategoriesContent() {
   const newCategory = useNewCategory();
   const deleteCategories = useBulkDeleteCategories();
   const categoriesQuery = useGetCategories();
@@ -52,7 +52,7 @@ const CategoriesPage = () => {
           </Button>
         </CardHeader>
         <CardContent>
-          <DataTable
+          <DataTableWithParams
             disabled={isDisabled}
             onDelete={row => {
               const ids = row.map(r => r.original.id);
@@ -66,6 +66,12 @@ const CategoriesPage = () => {
       </Card>
     </div>
   );
-};
+}
 
-export default CategoriesPage;
+export default function CategoriesPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CategoriesContent />
+    </Suspense>
+  );
+}

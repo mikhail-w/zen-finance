@@ -1,9 +1,10 @@
 'use client';
 
 import qs from 'query-string';
-import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useGetAccounts } from '@/features/accounts/api/use-get-accounts';
 import { useGetSummary } from '@/features/summary/api/use-get-summary';
+import { FilterWrapper } from '@/components/filter-wrapper';
 
 import {
   Select,
@@ -13,13 +14,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export const AccountFilter = () => {
+function AccountFilterInner({ searchParams }: { searchParams: URLSearchParams }) {
   const router = useRouter();
   const pathname = usePathname();
-  const params = useSearchParams();
-  const accountId = params.get('accountId') || 'all';
-  const from = params.get('from') || '';
-  const to = params.get('to') || '';
+  const accountId = searchParams.get('accountId') || 'all';
+  const from = searchParams.get('from') || '';
+  const to = searchParams.get('to') || '';
 
   const { isLoading: isLoadingSummary } = useGetSummary();
   const { data: accounts, isLoading: isLoadingAccounts } = useGetAccounts();
@@ -68,4 +68,12 @@ export const AccountFilter = () => {
       </SelectContent>
     </Select>
   );
-};
+}
+
+export function AccountFilter() {
+  return (
+    <FilterWrapper>
+      {({ searchParams }) => <AccountFilterInner searchParams={searchParams} />}
+    </FilterWrapper>
+  );
+}
