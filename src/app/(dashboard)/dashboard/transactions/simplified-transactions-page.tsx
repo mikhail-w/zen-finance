@@ -18,6 +18,7 @@ import { ParseResult, ParseError } from 'papaparse';
 import { ResponseType } from './columns';
 import { Row } from '@tanstack/react-table';
 import { SearchParamsTable } from '@/components/search-params-table';
+import { ImportedTransaction } from './types';
 
 enum VARIANTS {
   LIST = 'LIST',
@@ -45,14 +46,6 @@ const INITIAL_IMPORT_RESULTS: ImportResultsType = {
   errors: [],
   meta: {},
 };
-
-// Define the ImportedTransaction interface to match what ImportCard returns
-interface ImportedTransaction {
-  amount: number;
-  date: string;
-  payee: string;
-  [key: string]: string | number;
-}
 
 // Loading component
 export const TransactionsLoading = () => (
@@ -129,18 +122,37 @@ export function SimplifiedTransactionsPage() {
 
       // Transform the data to match the schema
       const data = values.map(value => {
-        return {
+        // Create base transaction object
+        const transaction = {
           accountId,
           amount: value.amount,
-          date: new Date(value.date), // Convert string date to Date object
+          date: new Date(value.date), // Convert string to Date object
           payee: value.payee,
         };
+
+        // Add categoryId if it exists
+        if (value.categoryId) {
+          console.log(`Adding categoryId to transaction: ${value.categoryId}`);
+          return {
+            ...transaction,
+            categoryId: value.categoryId
+          };
+        }
+
+        return transaction;
       });
+
+      console.log('Transformed transactions:', data);
 
       createTransactions.mutate(data, {
         onSuccess: () => {
+          toast.success('Transactions imported successfully');
           onCancelImport();
         },
+        onError: (error) => {
+          console.error('Import error:', error);
+          toast.error('Failed to import transactions');
+        }
       });
     } catch (error) {
       console.error('Error in import submission:', error);

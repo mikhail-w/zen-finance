@@ -51,7 +51,8 @@ interface ImportedTransaction {
   amount: number;
   date: string;
   payee: string;
-  [key: string]: string | number;
+  categoryId?: string;
+  [key: string]: string | number | undefined;
 }
 
 // Loading component
@@ -123,7 +124,7 @@ export function ClientTransactionsPage() {
         return toast.error('Please select an account to continue.');
       }
 
-      // Transform the data to match the schema, converting string dates to Date objects
+      // Transform the data to match the schema
       const data = values.map(value => {
         // Create a new object with the correct types
         return {
@@ -131,6 +132,7 @@ export function ClientTransactionsPage() {
           amount: value.amount,
           date: new Date(value.date), // Convert string date to Date object
           payee: value.payee,
+          categoryId: value.categoryId // Add categoryId if available
         };
       });
 

@@ -8,7 +8,12 @@ const getBaseUrl = () => {
     return window.location.origin;
   }
   // Fallback to environment variable or a default
-  return process.env.NEXT_PUBLIC_APP_URL || '';
+  return process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 };
 
-export const client = hc<AppType>(getBaseUrl());
+// Create the client with proper configuration
+export const client = hc<AppType>(getBaseUrl(), {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});

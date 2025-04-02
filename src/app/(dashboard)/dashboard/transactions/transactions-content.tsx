@@ -101,8 +101,8 @@ export default function TransactionsContent() {
     try {
       const accountId = await confirm();
 
-      if (!accountId || typeof accountId !== 'string') {
-        return toast.error('Please select an account to continue.');
+      if (!accountId) {
+        return;
       }
 
       // Transform the data to match the schema, converting string dates to Date objects
@@ -119,6 +119,7 @@ export default function TransactionsContent() {
       createTransactions.mutate(data, {
         onSuccess: () => {
           onCancelImport();
+          toast.success('Transactions imported successfully');
         },
       });
     } catch (error) {

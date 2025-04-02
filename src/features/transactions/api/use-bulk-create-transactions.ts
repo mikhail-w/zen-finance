@@ -19,8 +19,16 @@ export const useBulkCreateTransactions = () => {
       console.log('Bulk Create Request Data:', JSON.stringify(json, null, 2));
 
       try {
+        // Convert string dates to Date objects
+        const formattedJson = json.map(transaction => ({
+          ...transaction,
+          date: typeof transaction.date === 'string' ? new Date(transaction.date) : transaction.date
+        }));
+
+        console.log('Formatted Request Data:', JSON.stringify(formattedJson, null, 2));
+
         const response = await client.api.transactions['bulk-create']['$post']({
-          json,
+          json: formattedJson,
         });
 
         // Log the raw response
@@ -41,26 +49,35 @@ export const useBulkCreateTransactions = () => {
         throw error;
       }
     },
-    onSuccess: data => {
+    onSuccess: async data => {
       // Log the success data
       console.log('Mutation success data:', data);
 
       toast.success('Transactions created');
 
-      // Force refetch transactions
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      // Invalidate and immediately refetch both queries
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['transactions'] }),
+        queryClient.invalidateQueries({ queryKey: ['summary'] })
+      ]);
 
-      // Wait for the query to be refetched
-      setTimeout(() => {
-        // Force a refetch if necessary
-        queryClient.refetchQueries({ queryKey: ['transactions'] });
+      // Force an immediate refetch
+      await Promise.all([
+        queryClient.refetchQueries({ 
+          queryKey: ['transactions'],
+          exact: false
+        }),
+        queryClient.refetchQueries({ 
+          queryKey: ['summary'],
+          exact: false
+        })
+      ]);
 
-        // Log the current cache state
-        console.log(
-          'Current transactions cache after refetch:',
-          queryClient.getQueryData(['transactions'])
-        );
-      }, 500);
+      // Log the current cache state
+      console.log(
+        'Current transactions cache after refetch:',
+        queryClient.getQueryData(['transactions'])
+      );
     },
     onError: error => {
       console.error('Mutation error in handler:', error);

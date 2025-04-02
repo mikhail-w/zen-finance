@@ -29,13 +29,24 @@ interface SummaryData {
   days: DaySummary[];
 }
 
+const emptyData: SummaryData = {
+  incomeAmount: 0,
+  expensesAmount: 0,
+  remainingAmount: 0,
+  remainingChange: 0,
+  incomeChange: 0,
+  expensesChange: 0,
+  categories: [],
+  days: [],
+};
+
 export function useClientSummary() {
   const params = useSearchParams();
   const from = params.get('from') || '';
   const to = params.get('to') || '';
   const accountId = params.get('accountId') || '';
 
-  return useQuery<SummaryData | null>({
+  return useQuery<SummaryData>({
     queryKey: ['summary', { from, to, accountId }],
     queryFn: async () => {
       const response = await client.api.summary.$get({
@@ -48,9 +59,9 @@ export function useClientSummary() {
 
       const { data } = await response.json();
 
-      // If data is missing, return null instead of undefined.
+      // If data is missing, return empty data structure instead of null
       if (!data) {
-        return null;
+        return emptyData;
       }
 
       return {
@@ -61,16 +72,25 @@ export function useClientSummary() {
         remainingChange: convertAmountFromMiliunits(data.remainingChange),
         incomeChange: convertAmountFromMiliunits(data.incomeChange),
         expensesChange: convertAmountFromMiliunits(data.expensesChange),
-        categories: data.categories.map((category: Category) => ({
+        categories: data.categories?.map((category: Category) => ({
           ...category,
           value: convertAmountFromMiliunits(category.value),
-        })),
-        days: data.days.map((day: DaySummary) => ({
+        })) ?? [],
+        days: data.days?.map((day: DaySummary) => ({
           ...day,
           income: convertAmountFromMiliunits(day.income),
           expenses: convertAmountFromMiliunits(day.expenses),
-        })),
+        })) ?? [],
       };
     },
+    // Remove staleTime to ensure immediate refetch
+    staleTime: 0,
+    // Remove initialData to prevent stale data from being shown
+    // initialData: emptyData,
+    // Return empty data instead of undefined when query is disabled
+    placeholderData: emptyData,
+    // Add refetchOnMount and refetchOnWindowFocus
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
 }

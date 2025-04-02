@@ -24,14 +24,24 @@ type UseGetSummaryResult = {
   ClientComponent: ComponentType;
 };
 
+const emptyData: SummaryData = {
+  remainingAmount: 0,
+  remainingChange: 0,
+  incomeAmount: 0,
+  incomeChange: 0,
+  expensesAmount: 0,
+  expensesChange: 0,
+  categories: [],
+  days: [],
+};
+
 export const useGetSummary = (): UseGetSummaryResult => {
-  // Define a state to hold the data that would be returned by the hook
   const [result, setResult] = useState<{
     data: SummaryData | null;
     isLoading: boolean;
     error: Error | null;
   }>({
-    data: null,
+    data: emptyData,
     isLoading: true,
     error: null,
   });
@@ -44,7 +54,11 @@ export const useGetSummary = (): UseGetSummaryResult => {
           const { data, isLoading, error } = mod.useClientSummary();
 
           useEffect(() => {
-            setResult({ data: data ?? null, isLoading, error });
+            setResult(prev => ({
+              data: data ?? emptyData,
+              isLoading,
+              error,
+            }));
           }, [data, isLoading, error]);
 
           return null;
