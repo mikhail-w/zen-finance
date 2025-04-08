@@ -6,7 +6,7 @@ import { createId } from '@paralleldrive/cuid2';
 import { zValidator } from '@hono/zod-validator';
 import { clerkMiddleware, getAuth } from '@hono/clerk-auth';
 
-import { db } from '@/db/drizzle';
+import { getDb } from '@/db/drizzle';
 import {
   transactions,
   insertTransactionSchema,
@@ -29,6 +29,7 @@ const app = new Hono()
     async c => {
       const auth = getAuth(c);
       const { from, to, accountId } = c.req.valid('query');
+      const db = getDb();
 
       if (!auth?.userId) {
         return c.json({ error: 'Unauthorized' }, 401);
@@ -78,6 +79,7 @@ const app = new Hono()
     async c => {
       const auth = getAuth(c);
       const { id } = c.req.valid('param');
+      const db = getDb();
 
       if (!id) {
         return c.json({ error: 'Missing Id' }, 400);
@@ -114,6 +116,7 @@ const app = new Hono()
     async c => {
       const auth = getAuth(c);
       const values = c.req.valid('json');
+      const db = getDb();
 
       if (!auth?.userId) {
         return c.json({ error: 'Unauthorized' }, 401);
@@ -142,6 +145,7 @@ const app = new Hono()
     async c => {
       const auth = getAuth(c);
       const values = c.req.valid('json');
+      const db = getDb();
 
       if (!auth?.userId) {
         return c.json({ error: 'Unathorized' }, 401);
@@ -179,6 +183,7 @@ const app = new Hono()
     async c => {
       const auth = getAuth(c);
       const values = c.req.valid('json');
+      const db = getDb();
 
       if (!auth?.userId) {
         return c.json({ error: 'Unauthorized' }, 401);
@@ -205,6 +210,7 @@ const app = new Hono()
       const auth = getAuth(c);
       const { id } = c.req.valid('param');
       const values = c.req.valid('json');
+      const db = getDb();
 
       if (!id) {
         return c.json({ error: 'Missing id' }, 400);
@@ -248,6 +254,7 @@ const app = new Hono()
     async c => {
       const auth = getAuth(c);
       const { id } = c.req.valid('param');
+      const db = getDb();
 
       if (!id) {
         return c.json({ error: 'Missing id' }, 400);

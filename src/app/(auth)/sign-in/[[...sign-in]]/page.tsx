@@ -6,8 +6,8 @@ const SignInPage = () => {
   return (
     <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-gradient-to-br from-white to-green-50">
       {/* Left side - Sign in form (visible on all screen sizes) */}
-      <div className="h-full flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
-        <div className="w-full max-w-md mx-auto">
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div className="w-full max-w-md px-4 sm:px-6">
           <div className="text-center space-y-3 sm:space-y-4 mb-6 sm:mb-10">
             <h1 className="font-bold text-3xl sm:text-4xl text-gray-800 mb-2">
               Welcome Back
@@ -16,7 +16,7 @@ const SignInPage = () => {
               Log in or create an account to access your Zen Finance dashboard
             </p>
           </div>
-          <div className="bg-white rounded-xl shadow-xl p-4 sm:p-6">
+          <div className="bg-white -ml-3 rounded-xl shadow-xl p-4 sm:p-6">
             <ClerkLoaded>
               <SignIn
                 path="/sign-in"
@@ -37,7 +37,7 @@ const SignInPage = () => {
                       'text-base sm:text-lg p-2 sm:p-3 border-gray-300 hover:bg-gray-50',
                     otpCodeFieldInput:
                       'text-xl sm:text-2xl border-gray-300 focus:border-green-500 focus:ring-green-500',
-                    card: 'shadow-none',
+                    card: 'shadow-none w-full',
                     navbar: 'hidden',
                     dividerLine: 'border-t-2 border-gray-200',
                     dividerText: 'text-base sm:text-lg text-gray-500 bg-white',
@@ -57,7 +57,6 @@ const SignInPage = () => {
           </div>
         </div>
       </div>
-
       {/* Right side - Image (hidden on mobile, visible on desktop) */}
       <div className="hidden lg:flex items-center justify-center p-6 sm:p-8 lg:p-12">
         <Image

@@ -1,4 +1,4 @@
-import { db } from '@/db/drizzle';
+import { getDb } from '@/db/drizzle';
 import { accounts, categories, transactions } from '@/db/schema';
 import { clerkMiddleware, getAuth } from '@hono/clerk-auth';
 import { zValidator } from '@hono/zod-validator';
@@ -23,6 +23,7 @@ const app = new Hono().get(
   async c => {
     const auth = getAuth(c);
     const { from, to, accountId } = c.req.valid('query');
+    const db = getDb();
 
     if (!auth?.userId) {
       return c.json({ error: 'Unauthorized' }, 401);
@@ -156,12 +157,12 @@ const app = new Hono().get(
 
     return c.json({
       data: {
-        remainingAmount: currentPeriod.remaining,
-        remainingChange,
         incomeAmount: currentPeriod.income,
+        expensesAmount: Math.abs(currentPeriod.expenses),
+        remainingAmount: currentPeriod.remaining,
         incomeChange,
-        expensesAmount: currentPeriod.expenses,
         expensesChange,
+        remainingChange,
         categories: finalCategories,
         days,
       },
