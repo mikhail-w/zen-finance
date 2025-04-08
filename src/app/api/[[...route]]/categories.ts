@@ -62,24 +62,29 @@ const app = new Hono()
     clerkMiddleware(),
     zValidator('json', insertCategorySchema.pick({ name: true })),
     async c => {
-      const auth = getAuth(c);
-      const values = c.req.valid('json');
-      const db = getDb();
+      try {
+        const auth = getAuth(c);
+        const values = await c.req.json();
+        const db = getDb();
 
-      if (!auth?.userId) {
-        return c.json({ error: 'Unauthorized' }, 401);
+        if (!auth?.userId) {
+          return c.json({ error: 'Unauthorized' }, 401);
+        }
+
+        const data = await db
+          .insert(categories)
+          .values({
+            id: createId(),
+            userId: auth.userId,
+            ...values,
+          })
+          .returning();
+
+        return c.json({ data });
+      } catch (error) {
+        console.error('Error creating category:', error);
+        return c.json({ error: 'Failed to create category' }, 500);
       }
-
-      const data = await db
-        .insert(categories)
-        .values({
-          id: createId(),
-          userId: auth.userId,
-          ...values,
-        })
-        .returning();
-
-      return c.json({ data });
     }
   )
   .post(
@@ -94,6 +99,7 @@ const app = new Hono()
     async c => {
       const auth = getAuth(c);
       const values = c.req.valid('json');
+      const db = getDb();
 
       if (!auth?.userId) {
         return c.json({ error: 'Unathorized' }, 401);
@@ -123,6 +129,7 @@ const app = new Hono()
       const auth = getAuth(c);
       const { id } = c.req.valid('param');
       const values = c.req.valid('json');
+      const db = getDb();
 
       if (!id) {
         return c.json({ error: 'Missing id' }, 400);
@@ -152,6 +159,7 @@ const app = new Hono()
     async c => {
       const auth = getAuth(c);
       const { id } = c.req.valid('param');
+      const db = getDb();
 
       if (!id) {
         return c.json({ error: 'Missing id' }, 400);
