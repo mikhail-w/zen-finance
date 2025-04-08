@@ -64,7 +64,9 @@ const app = new Hono()
     async c => {
       try {
         const auth = getAuth(c);
+        console.log('Auth object:', auth);
         const values = await c.req.json();
+        console.log('Values:', values);
         const db = getDb();
 
         if (!auth?.userId) {
