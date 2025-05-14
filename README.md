@@ -1,20 +1,31 @@
 # Zen Finance
 
-A modern finance tracking application built with Next.js and Tailwind CSS.
+A modern, full-stack personal finance tracking application built with Next.js 15, TypeScript, and Tailwind CSS. Zen Finance helps you manage your finances with a clean, intuitive interface and powerful features.
+
+## ✨ Features
+
+- 📊 Interactive dashboards with Recharts
+- 💰 Transaction tracking and management
+- 🔐 Secure authentication with Clerk
+- 📱 Responsive design for all devices
+- 🎨 Dark/Light theme support
+- 📈 Data visualization and analytics
+- 📤 CSV import/export functionality
+- 🔄 Real-time updates
+- 🗃️ Database management with Drizzle ORM
 
 ## 🌐 Live Demo
 
-Check out the live version of the app: **(https://zen-finance.vercel.app/)**.
+Check out the live version of the app: [https://zen-finance.vercel.app/](https://zen-finance.vercel.app/)
 
-## Getting Started
-
-These instructions will get your copy of the project up and running on your
-local machine for development purposes.
+## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js (v18.18.0 or higher)
 - npm or yarn
+- A Clerk account for authentication
+- NeonDB account (or another PostgreSQL database)
 
 ### Installation
 
@@ -33,7 +44,36 @@ npm install
 yarn install
 ```
 
-3. Start the development server
+3. Set up environment variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+# Authentication (Clerk)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
+CLERK_SECRET_KEY=your_secret_key
+
+# Database
+DATABASE_URL=your_database_url
+
+# App
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+4. Set up the database
+
+```bash
+# Generate database schema
+npm run db:generate
+
+# Run migrations
+npm run db:migrate
+
+# (Optional) Seed the database with sample data
+npm run db:seed
+```
+
+5. Start the development server
 
 ```bash
 npm run dev
@@ -41,21 +81,60 @@ npm run dev
 yarn dev
 ```
 
-## Built With
+The application will be available at `http://localhost:3000`.
 
-- [Next.js](https://nextjs.org/) - The React framework
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
-- [TypeScript](https://www.typescriptlang.org/) - JavaScript with syntax for
-  types
+## 🛠️ Tech Stack
 
-## Notes on Tailwind CSS Setup
+### Frontend
+- [Next.js](https://nextjs.org/) - React framework
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [Radix UI](https://www.radix-ui.com/) - Accessible components
+- [React Query](https://tanstack.com/query/latest) - Data fetching
+- [Recharts](https://recharts.org/) - Data visualization
+- [Framer Motion](https://www.framer.com/motion/) - Animations
+- [Zustand](https://zustand-demo.pmnd.rs/) - State management
 
-This project uses Tailwind CSS v4.0 with Next.js. The setup includes:
+### Backend
+- [Hono](https://hono.dev/) - API routing
+- [Drizzle ORM](https://orm.drizzle.team/) - Database ORM
+- [NeonDB](https://neon.tech/) - PostgreSQL database
+- [Clerk](https://clerk.com/) - Authentication
+- [Zod](https://zod.dev/) - Schema validation
 
-1. Custom font size configuration to match the original rem-based design
-2. CSS variables for colors and gradients to maintain consistency
-3. Custom component classes via @layer components
-4. Animation styles in a separate file for better organization
+## 📁 Project Structure
 
-For more information on customizing Tailwind CSS, see the
-[Tailwind CSS documentation](https://tailwindcss.com/docs/configuration).
+```
+zen-finance/
+├── src/
+│   ├── app/          # Next.js pages and API routes
+│   ├── components/   # Reusable UI components
+│   ├── db/          # Database schema and configurations
+│   ├── features/    # Feature-specific components and logic
+│   ├── hooks/       # Custom React hooks
+│   ├── lib/         # Utility functions and shared logic
+│   ├── providers/   # React context providers
+│   └── styles/      # Global styles and Tailwind configurations
+├── public/          # Static assets
+├── scripts/        # Database and utility scripts
+└── drizzle/        # Database migrations
+```
+
+## 🧪 Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run db:generate` - Generate database schema
+- `npm run db:migrate` - Run database migrations
+- `npm run db:seed` - Seed database with sample data
+- `npm run db:studio` - Open Drizzle Studio
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
