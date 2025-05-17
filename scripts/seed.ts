@@ -5,8 +5,16 @@ import { neon } from '@neondatabase/serverless';
 import { categories, accounts, transactions } from '@/db/schema';
 import * as fs from 'fs';
 import * as path from 'path';
+import { eq, inArray } from 'drizzle-orm';
 
-// Manually load the DATABASE_URL from .env file since the config() method isn't working
+// Get user ID from command line argument
+const userId = process.argv[2];
+if (!userId) {
+  console.error('Please provide a user ID as a command line argument');
+  console.error('Usage: npm run db:seed -- your-user-id');
+  process.exit(1);
+}
+
 console.log('Loading environment variables manually...');
 try {
   const envPath = path.resolve(process.cwd(), '.env.local');
@@ -46,38 +54,29 @@ try {
   console.error('Error loading environment variables:', error);
 }
 
-// Hardcode the DATABASE_URL from what we see in your .env file
 if (!process.env.DATABASE_URL) {
-  console.log('DATABASE_URL not found in environment, using hardcoded value');
-  process.env.DATABASE_URL =
-    'postgresql://neondb_owner:npg_1xNdb18awfFHOep@withered-credit-a4smoszg-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require';
+  console.error('DATABASE_URL not found in environment variables');
+  process.exit(1);
 }
 
-console.log(
-  'DATABASE_URL:',
-  process.env.DATABASE_URL ? 'Is defined' : 'Is not defined'
-);
+console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'Is defined' : 'Is not defined');
 
 // Create the database connection
 const sql = neon(process.env.DATABASE_URL);
 const db = drizzle(sql);
 
-// Use the correct user ID from Clerk
-const SEED_USER_ID = 'user_2trtEteGjV50IKsFKKLqfgxOAeu';
-
-// Keep the rest of your seed code the same...
-console.log(`Using user ID: ${SEED_USER_ID}`);
+console.log(`Using user ID: ${userId}`);
 
 const SEED_CATEGORIES = [
-  { id: 'category_1', name: 'Food', userId: SEED_USER_ID, plaidId: null },
-  { id: 'category_2', name: 'Rent', userId: SEED_USER_ID, plaidId: null },
-  { id: 'category_3', name: 'Utilities', userId: SEED_USER_ID, plaidId: null },
-  { id: 'category_7', name: 'Clothing', userId: SEED_USER_ID, plaidId: null },
+  { id: `category_${Date.now()}_1`, name: 'Food', userId, plaidId: null },
+  { id: `category_${Date.now()}_2`, name: 'Rent', userId, plaidId: null },
+  { id: `category_${Date.now()}_3`, name: 'Utilities', userId, plaidId: null },
+  { id: `category_${Date.now()}_4`, name: 'Clothing', userId, plaidId: null },
 ];
 
 const SEED_ACCOUNTS = [
-  { id: 'account_1', name: 'Checking', userId: SEED_USER_ID, plaidId: null },
-  { id: 'account_2', name: 'Savings', userId: SEED_USER_ID, plaidId: null },
+  { id: `account_${Date.now()}_1`, name: 'Checking', userId, plaidId: null },
+  { id: `account_${Date.now()}_2`, name: 'Savings', userId, plaidId: null },
 ];
 
 const defaultTo = new Date();
@@ -91,7 +90,7 @@ import { convertAmountToMiliunits } from '@/lib/utils';
 const generateRandomAmount = (category: typeof categories.$inferInsert) => {
   switch (category.name) {
     case 'Rent':
-      return Math.random() * 400 + 90; // Rent will likely be a larger amount
+      return Math.random() * 400 + 90;
     case 'Utilities':
       return Math.random() * 200 + 50;
     case 'Food':
@@ -109,24 +108,21 @@ const generateRandomAmount = (category: typeof categories.$inferInsert) => {
 };
 
 const generateTransactionsForDay = (day: Date) => {
-  const numTransactions = Math.floor(Math.random() * 4) + 1; // 1 to 4 transactions per day
+  const numTransactions = Math.floor(Math.random() * 4) + 1;
   for (let i = 0; i < numTransactions; i++) {
-    const category =
-      SEED_CATEGORIES[Math.floor(Math.random() * SEED_CATEGORIES.length)];
-    const isExpense = Math.random() > 0.6; // 60% chance of being an expense
+    const category = SEED_CATEGORIES[Math.floor(Math.random() * SEED_CATEGORIES.length)];
+    const isExpense = Math.random() > 0.6;
     const amount = generateRandomAmount(category);
-    const formattedAmount = convertAmountToMiliunits(
-      isExpense ? -amount : amount
-    ); // Negative for expenses
+    const formattedAmount = convertAmountToMiliunits(isExpense ? -amount : amount);
 
     SEED_TRANSACTIONS.push({
-      id: `transaction_${format(day, 'yyyy-MM-dd')}_${i}`,
-      accountId: SEED_ACCOUNTS[0].id, // Assuming always using the first account for simplicity
+      id: `transaction_${format(day, 'yyyy-MM-dd')}_${i}_${Date.now()}`,
+      accountId: SEED_ACCOUNTS[0].id,
       categoryId: category.id,
       date: day,
       amount: formattedAmount,
-      payee: 'Merchant',
-      notes: 'Random transaction',
+      payee: 'Demo Merchant',
+      notes: 'Demo transaction',
     });
   }
 };
@@ -136,17 +132,24 @@ const generateTransactions = () => {
   days.forEach(day => generateTransactionsForDay(day));
 };
 
-generateTransactions();
-
 const main = async () => {
   try {
     console.log('Starting database seeding process...');
 
-    // Reset database
+    // Reset database for this user
     console.log('Deleting existing data...');
-    await db.delete(transactions).execute();
-    await db.delete(accounts).execute();
-    await db.delete(categories).execute();
+    await db.delete(transactions)
+      .where(eq(transactions.accountId, SEED_ACCOUNTS[0].id))
+      .execute();
+    await db.delete(accounts)
+      .where(eq(accounts.userId, userId))
+      .execute();
+    await db.delete(categories)
+      .where(eq(categories.userId, userId))
+      .execute();
+
+    // Generate transactions
+    generateTransactions();
 
     // Seed categories
     console.log('Seeding categories...');
@@ -163,10 +166,7 @@ const main = async () => {
     console.log('Seeding completed successfully!');
   } catch (error) {
     console.error('Error during seed:', error);
-    console.error(
-      'Error details:',
-      error instanceof Error ? error.message : String(error)
-    );
+    console.error('Error details:', error instanceof Error ? error.message : String(error));
     process.exit(1);
   }
 };
